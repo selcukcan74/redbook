@@ -1,0 +1,13 @@
+{
+	"InstallScripts" : 
+	[
+		"C:/Users/selcu/Documents/FlutterProjects/redbook/build/windows/x64/cmake_install.cmake",
+		"C:/Users/selcu/Documents/FlutterProjects/redbook/build/windows/x64/flutter/cmake_install.cmake",
+		"C:/Users/selcu/Documents/FlutterProjects/redbook/build/windows/x64/runner/cmake_install.cmake",
+		"C:/Users/selcu/Documents/FlutterProjects/redbook/build/windows/x64/plugins/app_links/cmake_install.cmake",
+		"C:/Users/selcu/Documents/FlutterProjects/redbook/build/windows/x64/plugins/file_selector_windows/cmake_install.cmake",
+		"C:/Users/selcu/Documents/FlutterProjects/redbook/build/windows/x64/plugins/printing/cmake_install.cmake",
+		"C:/Users/selcu/Documents/FlutterProjects/redbook/build/windows/x64/plugins/url_launcher_windows/cmake_install.cmake"
+	],
+	"Parallel" : false
+}

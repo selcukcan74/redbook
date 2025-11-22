@@ -1,0 +1,46 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "C:/Users/selcu/Documents/FlutterProjects/redbook/build/windows/x64/pdfium-download/CMakeFiles/pdfium-download"
+		},
+		{
+			"file" : "C:/Users/selcu/Documents/FlutterProjects/redbook/build/windows/x64/pdfium-download/CMakeFiles/91cece15ada66261895bdb7016640f0b/pdfium-download.rule"
+		},
+		{
+			"file" : "C:/Users/selcu/Documents/FlutterProjects/redbook/build/windows/x64/pdfium-download/CMakeFiles/e0fde0b5e148c76cd060e6ce37aa0129/pdfium-download-complete.rule"
+		},
+		{
+			"file" : "C:/Users/selcu/Documents/FlutterProjects/redbook/build/windows/x64/pdfium-download/CMakeFiles/11375b7da63da32681614dbc79b4890c/pdfium-download-build.rule"
+		},
+		{
+			"file" : "C:/Users/selcu/Documents/FlutterProjects/redbook/build/windows/x64/pdfium-download/CMakeFiles/11375b7da63da32681614dbc79b4890c/pdfium-download-configure.rule"
+		},
+		{
+			"file" : "C:/Users/selcu/Documents/FlutterProjects/redbook/build/windows/x64/pdfium-download/CMakeFiles/11375b7da63da32681614dbc79b4890c/pdfium-download-download.rule"
+		},
+		{
+			"file" : "C:/Users/selcu/Documents/FlutterProjects/redbook/build/windows/x64/pdfium-download/CMakeFiles/11375b7da63da32681614dbc79b4890c/pdfium-download-install.rule"
+		},
+		{
+			"file" : "C:/Users/selcu/Documents/FlutterProjects/redbook/build/windows/x64/pdfium-download/CMakeFiles/11375b7da63da32681614dbc79b4890c/pdfium-download-mkdir.rule"
+		},
+		{
+			"file" : "C:/Users/selcu/Documents/FlutterProjects/redbook/build/windows/x64/pdfium-download/CMakeFiles/11375b7da63da32681614dbc79b4890c/pdfium-download-patch.rule"
+		},
+		{
+			"file" : "C:/Users/selcu/Documents/FlutterProjects/redbook/build/windows/x64/pdfium-download/CMakeFiles/11375b7da63da32681614dbc79b4890c/pdfium-download-test.rule"
+		},
+		{
+			"file" : "C:/Users/selcu/Documents/FlutterProjects/redbook/build/windows/x64/pdfium-download/CMakeFiles/11375b7da63da32681614dbc79b4890c/pdfium-download-update.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"pdfium-download"
+		],
+		"name" : "pdfium-download"
+	}
+}

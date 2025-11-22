@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="18.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\Users\selcu\Documents\FlutterProjects\redbook\windows\flutter\ephemeral\.plugin_symlinks\printing\windows\printing.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\selcu\Documents\FlutterProjects\redbook\windows\flutter\ephemeral\.plugin_symlinks\printing\windows\printing_plugin.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\selcu\Documents\FlutterProjects\redbook\windows\flutter\ephemeral\.plugin_symlinks\printing\windows\print_job.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="C:\Users\selcu\Documents\FlutterProjects\redbook\windows\flutter\ephemeral\.plugin_symlinks\printing\windows\printing.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\selcu\Documents\FlutterProjects\redbook\windows\flutter\ephemeral\.plugin_symlinks\printing\windows\include\printing\printing_plugin.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\selcu\Documents\FlutterProjects\redbook\windows\flutter\ephemeral\.plugin_symlinks\printing\windows\print_job.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\selcu\Documents\FlutterProjects\redbook\windows\flutter\ephemeral\.plugin_symlinks\printing\windows\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{5331882D-D242-31C0-9938-8285C6FCA580}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{B62EACE7-7879-372B-BE1B-EA4244C9FCA4}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

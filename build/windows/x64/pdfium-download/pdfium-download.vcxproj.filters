@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="18.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\selcu\Documents\FlutterProjects\redbook\build\windows\x64\pdfium-download\CMakeFiles\11375b7da63da32681614dbc79b4890c\pdfium-download-mkdir.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\selcu\Documents\FlutterProjects\redbook\build\windows\x64\pdfium-download\CMakeFiles\11375b7da63da32681614dbc79b4890c\pdfium-download-download.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\selcu\Documents\FlutterProjects\redbook\build\windows\x64\pdfium-download\CMakeFiles\11375b7da63da32681614dbc79b4890c\pdfium-download-update.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\selcu\Documents\FlutterProjects\redbook\build\windows\x64\pdfium-download\CMakeFiles\11375b7da63da32681614dbc79b4890c\pdfium-download-patch.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\selcu\Documents\FlutterProjects\redbook\build\windows\x64\pdfium-download\CMakeFiles\11375b7da63da32681614dbc79b4890c\pdfium-download-configure.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\selcu\Documents\FlutterProjects\redbook\build\windows\x64\pdfium-download\CMakeFiles\11375b7da63da32681614dbc79b4890c\pdfium-download-build.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\selcu\Documents\FlutterProjects\redbook\build\windows\x64\pdfium-download\CMakeFiles\11375b7da63da32681614dbc79b4890c\pdfium-download-install.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\selcu\Documents\FlutterProjects\redbook\build\windows\x64\pdfium-download\CMakeFiles\11375b7da63da32681614dbc79b4890c\pdfium-download-test.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\selcu\Documents\FlutterProjects\redbook\build\windows\x64\pdfium-download\CMakeFiles\e0fde0b5e148c76cd060e6ce37aa0129\pdfium-download-complete.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\selcu\Documents\FlutterProjects\redbook\build\windows\x64\pdfium-download\CMakeFiles\91cece15ada66261895bdb7016640f0b\pdfium-download.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\selcu\Documents\FlutterProjects\redbook\build\windows\x64\pdfium-download\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="C:\Users\selcu\Documents\FlutterProjects\redbook\build\windows\x64\pdfium-download\CMakeFiles\pdfium-download" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{EDDB2562-9806-3FDB-8643-58413CC348C8}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

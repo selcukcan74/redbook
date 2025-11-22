@@ -1,7 +1,8 @@
-// ignore_for_file: use_build_context_synchronously
+// ignore_for_file: unused_import, use_build_context_synchronously
 
 import 'package:flutter/material.dart';
 import 'package:printing/printing.dart';
+import 'package:redbook/services/quote_pdf_service.dart';
 import '../../services/pdf_service.dart';
 import '../../services/quote_item_service.dart';
 import '../../services/quote_service.dart';
@@ -130,13 +131,11 @@ class _QuoteDetailPageState extends State<QuoteDetailPage> {
           IconButton(
             icon: const Icon(Icons.picture_as_pdf),
             onPressed: () async {
-              final pdfService = PdfService();
-              final pdfBytes = await pdfService.generateQuotePdf(
+              await QuotePdfService.generateAndShare(
                 quote: quote!,
                 customer: customer!,
                 items: items,
               );
-              await Printing.layoutPdf(onLayout: (_) async => pdfBytes);
             },
           ),
         ],

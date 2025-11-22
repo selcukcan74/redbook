@@ -1,0 +1,28 @@
+^C:\USERS\SELCU\DOCUMENTS\FLUTTERPROJECTS\REDBOOK\BUILD\WINDOWS\X64\CMAKEFILES\1691D1BA8714A16DC45B6859671F7914\FLUTTER_WINDOWS.DLL.RULE
+setlocal
+"C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E env FLUTTER_ROOT=C:\Users\selcu\flutter PROJECT_DIR=C:\Users\selcu\Documents\FlutterProjects\redbook FLUTTER_ROOT=C:\Users\selcu\flutter FLUTTER_EPHEMERAL_DIR=C:\Users\selcu\Documents\FlutterProjects\redbook\windows\flutter\ephemeral PROJECT_DIR=C:\Users\selcu\Documents\FlutterProjects\redbook FLUTTER_TARGET=C:\Users\selcu\Documents\FlutterProjects\redbook\lib\main.dart DART_DEFINES=RkxVVFRFUl9WRVJTSU9OPTMuMzkuMC0xLjAucHJlLTE4OQ==,RkxVVFRFUl9DSEFOTkVMPW1hc3Rlcg==,RkxVVFRFUl9HSVRfVVJMPWh0dHBzOi8vZ2l0aHViLmNvbS9mbHV0dGVyL2ZsdXR0ZXIuZ2l0,RkxVVFRFUl9GUkFNRVdPUktfUkVWSVNJT049YjFmNDY5NDI1OA==,RkxVVFRFUl9FTkdJTkVfUkVWSVNJT049ODhmOTYwOTgzZg==,RkxVVFRFUl9EQVJUX1ZFUlNJT049My4xMS4wIChidWlsZCAzLjExLjAtMTQ4LjAuZGV2KQ== DART_OBFUSCATION=false TRACK_WIDGET_CREATION=true TREE_SHAKE_ICONS=false PACKAGE_CONFIG=C:\Users\selcu\Documents\FlutterProjects\redbook\.dart_tool\package_config.json C:/Users/selcu/flutter/packages/flutter_tools/bin/tool_backend.bat windows-x64 Debug
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\SELCU\DOCUMENTS\FLUTTERPROJECTS\REDBOOK\BUILD\WINDOWS\X64\CMAKEFILES\F5C97E1CF4CA3BAD10BBBD0EF442376A\FLUTTER_ASSEMBLE.RULE
+setlocal
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\SELCU\DOCUMENTS\FLUTTERPROJECTS\REDBOOK\WINDOWS\FLUTTER\CMAKELISTS.TXT
+setlocal
+"C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -SC:/Users/selcu/Documents/FlutterProjects/redbook/windows -BC:/Users/selcu/Documents/FlutterProjects/redbook/build/windows/x64 --check-stamp-file C:/Users/selcu/Documents/FlutterProjects/redbook/build/windows/x64/flutter/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

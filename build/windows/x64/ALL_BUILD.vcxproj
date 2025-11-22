@@ -1,0 +1,176 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="18.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ResolveNugetPackages>false</ResolveNugetPackages>
+  </PropertyGroup>
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Profile|x64">
+      <Configuration>Profile</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{8BB1605D-CED0-3A17-9BBD-DCF8D6DEAF1A}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>10.0.26100.0</WindowsTargetPlatformVersion>
+    <Platform>x64</Platform>
+    <ProjectName>ALL_BUILD</ProjectName>
+    <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v145</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Profile|x64'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v145</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v145</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Midl>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">
+    <Midl>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Midl>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\selcu\Documents\FlutterProjects\redbook\windows\CMakeLists.txt">
+      <UseUtf8Encoding>Always</UseUtf8Encoding>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Building Custom Rule C:/Users/selcu/Documents/FlutterProjects/redbook/windows/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+"C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -SC:/Users/selcu/Documents/FlutterProjects/redbook/windows -BC:/Users/selcu/Documents/FlutterProjects/redbook/build/windows/x64 --check-stamp-file C:/Users/selcu/Documents/FlutterProjects/redbook/build/windows/x64/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.1\Modules\CMakeCXXInformation.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.1\Modules\CMakeCommonLanguageInclude.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.1\Modules\CMakeGenericSystem.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.1\Modules\CMakeInitializeConfigs.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.1\Modules\CMakeLanguageInformation.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.1\Modules\CMakeRCInformation.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.1\Modules\CMakeSystemSpecificInformation.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.1\Modules\CMakeSystemSpecificInitialize.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.1\Modules\Compiler\CMakeCommonCompilerMacros.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.1\Modules\Compiler\MSVC-CXX.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.1\Modules\Compiler\MSVC.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.1\Modules\Internal\CMakeCXXLinkerInformation.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.1\Modules\Internal\CMakeCommonLinkerInformation.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.1\Modules\Linker\MSVC-CXX.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.1\Modules\Linker\MSVC.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.1\Modules\Platform\Linker\Windows-MSVC-CXX.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.1\Modules\Platform\Linker\Windows-MSVC.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.1\Modules\Platform\Windows-Initialize.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.1\Modules\Platform\Windows-MSVC-CXX.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.1\Modules\Platform\Windows-MSVC.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.1\Modules\Platform\Windows.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.1\Modules\Platform\WindowsPaths.cmake;C:\Users\selcu\Documents\FlutterProjects\redbook\build\windows\x64\CMakeFiles\4.1.1-msvc1\CMakeCXXCompiler.cmake;C:\Users\selcu\Documents\FlutterProjects\redbook\build\windows\x64\CMakeFiles\4.1.1-msvc1\CMakeRCCompiler.cmake;C:\Users\selcu\Documents\FlutterProjects\redbook\build\windows\x64\CMakeFiles\4.1.1-msvc1\CMakeSystem.cmake;C:\Users\selcu\Documents\FlutterProjects\redbook\windows\flutter\generated_plugins.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\selcu\Documents\FlutterProjects\redbook\build\windows\x64\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">Building Custom Rule C:/Users/selcu/Documents/FlutterProjects/redbook/windows/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">setlocal
+"C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -SC:/Users/selcu/Documents/FlutterProjects/redbook/windows -BC:/Users/selcu/Documents/FlutterProjects/redbook/build/windows/x64 --check-stamp-file C:/Users/selcu/Documents/FlutterProjects/redbook/build/windows/x64/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.1\Modules\CMakeCXXInformation.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.1\Modules\CMakeCommonLanguageInclude.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.1\Modules\CMakeGenericSystem.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.1\Modules\CMakeInitializeConfigs.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.1\Modules\CMakeLanguageInformation.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.1\Modules\CMakeRCInformation.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.1\Modules\CMakeSystemSpecificInformation.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.1\Modules\CMakeSystemSpecificInitialize.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.1\Modules\Compiler\CMakeCommonCompilerMacros.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.1\Modules\Compiler\MSVC-CXX.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.1\Modules\Compiler\MSVC.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.1\Modules\Internal\CMakeCXXLinkerInformation.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.1\Modules\Internal\CMakeCommonLinkerInformation.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.1\Modules\Linker\MSVC-CXX.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.1\Modules\Linker\MSVC.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.1\Modules\Platform\Linker\Windows-MSVC-CXX.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.1\Modules\Platform\Linker\Windows-MSVC.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.1\Modules\Platform\Windows-Initialize.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.1\Modules\Platform\Windows-MSVC-CXX.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.1\Modules\Platform\Windows-MSVC.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.1\Modules\Platform\Windows.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.1\Modules\Platform\WindowsPaths.cmake;C:\Users\selcu\Documents\FlutterProjects\redbook\build\windows\x64\CMakeFiles\4.1.1-msvc1\CMakeCXXCompiler.cmake;C:\Users\selcu\Documents\FlutterProjects\redbook\build\windows\x64\CMakeFiles\4.1.1-msvc1\CMakeRCCompiler.cmake;C:\Users\selcu\Documents\FlutterProjects\redbook\build\windows\x64\CMakeFiles\4.1.1-msvc1\CMakeSystem.cmake;C:\Users\selcu\Documents\FlutterProjects\redbook\windows\flutter\generated_plugins.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">C:\Users\selcu\Documents\FlutterProjects\redbook\build\windows\x64\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Building Custom Rule C:/Users/selcu/Documents/FlutterProjects/redbook/windows/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">setlocal
+"C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -SC:/Users/selcu/Documents/FlutterProjects/redbook/windows -BC:/Users/selcu/Documents/FlutterProjects/redbook/build/windows/x64 --check-stamp-file C:/Users/selcu/Documents/FlutterProjects/redbook/build/windows/x64/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.1\Modules\CMakeCXXInformation.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.1\Modules\CMakeCommonLanguageInclude.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.1\Modules\CMakeGenericSystem.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.1\Modules\CMakeInitializeConfigs.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.1\Modules\CMakeLanguageInformation.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.1\Modules\CMakeRCInformation.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.1\Modules\CMakeSystemSpecificInformation.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.1\Modules\CMakeSystemSpecificInitialize.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.1\Modules\Compiler\CMakeCommonCompilerMacros.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.1\Modules\Compiler\MSVC-CXX.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.1\Modules\Compiler\MSVC.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.1\Modules\Internal\CMakeCXXLinkerInformation.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.1\Modules\Internal\CMakeCommonLinkerInformation.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.1\Modules\Linker\MSVC-CXX.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.1\Modules\Linker\MSVC.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.1\Modules\Platform\Linker\Windows-MSVC-CXX.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.1\Modules\Platform\Linker\Windows-MSVC.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.1\Modules\Platform\Windows-Initialize.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.1\Modules\Platform\Windows-MSVC-CXX.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.1\Modules\Platform\Windows-MSVC.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.1\Modules\Platform\Windows.cmake;C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-4.1\Modules\Platform\WindowsPaths.cmake;C:\Users\selcu\Documents\FlutterProjects\redbook\build\windows\x64\CMakeFiles\4.1.1-msvc1\CMakeCXXCompiler.cmake;C:\Users\selcu\Documents\FlutterProjects\redbook\build\windows\x64\CMakeFiles\4.1.1-msvc1\CMakeRCCompiler.cmake;C:\Users\selcu\Documents\FlutterProjects\redbook\build\windows\x64\CMakeFiles\4.1.1-msvc1\CMakeSystem.cmake;C:\Users\selcu\Documents\FlutterProjects\redbook\windows\flutter\generated_plugins.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Users\selcu\Documents\FlutterProjects\redbook\build\windows\x64\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="C:\Users\selcu\Documents\FlutterProjects\redbook\build\windows\x64\ZERO_CHECK.vcxproj">
+      <Project>{A7930D02-A12D-3253-B5BC-4D155533350C}</Project>
+      <Name>ZERO_CHECK</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\selcu\Documents\FlutterProjects\redbook\build\windows\x64\plugins\app_links\app_links_plugin.vcxproj">
+      <Project>{33AB044D-4164-375B-A082-E79EF4111297}</Project>
+      <Name>app_links_plugin</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\selcu\Documents\FlutterProjects\redbook\build\windows\x64\plugins\file_selector_windows\file_selector_windows_plugin.vcxproj">
+      <Project>{3F9800E4-8BF6-3F38-A17D-E590E348353A}</Project>
+      <Name>file_selector_windows_plugin</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\selcu\Documents\FlutterProjects\redbook\build\windows\x64\flutter\flutter_wrapper_app.vcxproj">
+      <Project>{AF6ABD9E-ADAD-3731-B116-265CEF0DF8E0}</Project>
+      <Name>flutter_wrapper_app</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\selcu\Documents\FlutterProjects\redbook\build\windows\x64\flutter\flutter_wrapper_plugin.vcxproj">
+      <Project>{E035E07C-AC62-34A3-9600-E4358B0E2809}</Project>
+      <Name>flutter_wrapper_plugin</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\selcu\Documents\FlutterProjects\redbook\build\windows\x64\plugins\printing\printing_plugin.vcxproj">
+      <Project>{2FBAB383-8DA0-3816-9F61-728BB58AFE7F}</Project>
+      <Name>printing_plugin</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\selcu\Documents\FlutterProjects\redbook\build\windows\x64\runner\redbook.vcxproj">
+      <Project>{B2E32099-E5C0-3393-A58A-C9613B719AC7}</Project>
+      <Name>redbook</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\selcu\Documents\FlutterProjects\redbook\build\windows\x64\plugins\url_launcher_windows\url_launcher_windows_plugin.vcxproj">
+      <Project>{D24A7A49-D59E-3A35-A898-D6A151BC8AA8}</Project>
+      <Name>url_launcher_windows_plugin</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
