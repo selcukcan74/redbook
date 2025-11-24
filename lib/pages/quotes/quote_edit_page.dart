@@ -25,7 +25,11 @@ class _QuoteEditPageState extends State<QuoteEditPage> {
 
   final notesController = TextEditingController();
 
-  // İNDİRİM ALANLARI
+  // 🔥 PARA BİRİMİ
+  List<String> currencies = ["TRY", "USD", "EUR", "GBP"];
+  String selectedCurrency = "TRY";
+
+  // 🔥 İNDİRİM ALANLARI
   String discountType = "none"; // none / percent / fixed
   final discountRateController = TextEditingController();
   final discountAmountController = TextEditingController();
@@ -56,7 +60,6 @@ class _QuoteEditPageState extends State<QuoteEditPage> {
     // FORM DOLDUR
     // ------------------------------
 
-    // Müşteri ID (her ihtimale karşı string normalize ediyoruz)
     selectedCustomerId = quote!["customer_id"]?.toString();
 
     // Notlar
@@ -66,6 +69,9 @@ class _QuoteEditPageState extends State<QuoteEditPage> {
     if (quote!["valid_until"] != null) {
       selectedValidDate = DateTime.tryParse(quote!["valid_until"]);
     }
+
+    // 🔥 PARA BİRİMİ
+    selectedCurrency = (quote!["currency"] ?? "TRY").toString();
 
     // İNDİRİM
     discountType = quote!["discount_type"] ?? "none";
@@ -95,7 +101,10 @@ class _QuoteEditPageState extends State<QuoteEditPage> {
       validUntil: selectedValidDate,
       status: quote!["status"],
 
-      // İndirim
+      // 🔥 PARA BİRİMİ GÜNCELLEME
+      currency: selectedCurrency,
+
+      // 🔥 İNDİRİM
       discountType: discountType,
       discountRate: discountType == "percent" ? parsedRate : 0,
       discountAmount: discountType == "fixed" ? parsedAmount : 0,
@@ -139,6 +148,31 @@ class _QuoteEditPageState extends State<QuoteEditPage> {
               }).toList(),
               onChanged: (v) {
                 setState(() => selectedCustomerId = v);
+              },
+            ),
+
+            const SizedBox(height: 20),
+
+            // -----------------------------
+            // PARA BİRİMİ
+            // -----------------------------
+            const Text(
+              "Para Birimi",
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8),
+
+            DropdownButtonFormField<String>(
+              value: selectedCurrency,
+              decoration: const InputDecoration(
+                labelText: "Para Birimi",
+                border: OutlineInputBorder(),
+              ),
+              items: currencies.map((c) {
+                return DropdownMenuItem(value: c, child: Text(c));
+              }).toList(),
+              onChanged: (v) {
+                setState(() => selectedCurrency = v!);
               },
             ),
 
@@ -243,7 +277,7 @@ class _QuoteEditPageState extends State<QuoteEditPage> {
                 controller: discountAmountController,
                 keyboardType: TextInputType.number,
                 decoration: const InputDecoration(
-                  labelText: "İndirim Tutarı (₺)",
+                  labelText: "İndirim Tutarı",
                   border: OutlineInputBorder(),
                 ),
               ),

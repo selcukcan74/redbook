@@ -160,7 +160,7 @@ class _QuotesPageState extends State<QuotesPage> {
     final type = q["discount_type"] ?? "none";
     if (type == "none") return const SizedBox.shrink();
 
-    final rate = ((q["discount_rate"] ?? 0) * 100).toDouble();
+    final rate = (q["discount_rate"] ?? 0).toDouble();
     final amount = (q["discount_amount"] ?? 0).toDouble();
 
     String text = "";

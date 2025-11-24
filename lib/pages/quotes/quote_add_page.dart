@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import '../../services/customer_service.dart';
 import '../../services/quote_service.dart';
+import '../../services/settings_service.dart';
 import 'quote_detail_page.dart';
 
 class QuoteAddPage extends StatefulWidget {
@@ -17,9 +18,14 @@ class _QuoteAddPageState extends State<QuoteAddPage> {
 
   final _customerService = CustomerService();
   final _quoteService = QuoteService();
+  final _settingsService = SettingsService();
 
   List<Map<String, dynamic>> customers = [];
   String? selectedCustomerId;
+
+  // PARA BİRİMİ
+  List<String> currencies = ["TRY", "USD", "EUR", "GBP"];
+  String selectedCurrency = "TRY";
 
   final TextEditingController _notesCtrl = TextEditingController();
   DateTime? validUntil;
@@ -30,11 +36,15 @@ class _QuoteAddPageState extends State<QuoteAddPage> {
   @override
   void initState() {
     super.initState();
-    loadCustomers();
+    loadData();
   }
 
-  Future<void> loadCustomers() async {
+  Future<void> loadData() async {
     customers = await _customerService.getCustomers();
+
+    final settings = await _settingsService.getSettings();
+    selectedCurrency = (settings["default_currency"] ?? "TRY").toString();
+
     setState(() => loading = false);
   }
 
@@ -71,6 +81,7 @@ class _QuoteAddPageState extends State<QuoteAddPage> {
         issueDate: DateTime.now(),
         validUntil: validUntil,
         notes: _notesCtrl.text.trim().isEmpty ? null : _notesCtrl.text.trim(),
+        currency: selectedCurrency, // 🔥 PARA BİRİMİ EKLENDİ
       );
 
       if (newQuote != null && newQuote["id"] != null) {
@@ -132,6 +143,23 @@ class _QuoteAddPageState extends State<QuoteAddPage> {
                     .toList(),
                 validator: (v) => v == null ? "Müşteri seçmek zorunlu" : null,
                 onChanged: (v) => setState(() => selectedCustomerId = v),
+              ),
+
+              const SizedBox(height: 16),
+
+              // -----------------------
+              // PARA BİRİMİ
+              // -----------------------
+              DropdownButtonFormField<String>(
+                value: selectedCurrency,
+                decoration: const InputDecoration(
+                  labelText: "Para Birimi",
+                  border: OutlineInputBorder(),
+                ),
+                items: currencies
+                    .map((c) => DropdownMenuItem(value: c, child: Text(c)))
+                    .toList(),
+                onChanged: (v) => setState(() => selectedCurrency = v!),
               ),
 
               const SizedBox(height: 16),

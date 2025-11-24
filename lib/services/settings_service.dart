@@ -7,7 +7,7 @@ class SettingsService {
   final supabase = Supabase.instance.client;
 
   // -----------------------------------------------------------
-  // Aktif şirket ID'si (companies tablosu) — FULL FIXED
+  // Aktif şirket ID'si (companies tablosu)
   // -----------------------------------------------------------
   Future<String> _getCompanyId() async {
     final user = supabase.auth.currentUser;
@@ -15,7 +15,6 @@ class SettingsService {
 
     final userId = user.id;
 
-    // Bu kullanıcıya ait bir company kaydı var mı?
     final existing = await supabase
         .from("companies")
         .select("id")
@@ -26,15 +25,12 @@ class SettingsService {
       return existing["id"].toString();
     }
 
-    // -----------------------------------------------
-    // Yeni company oluştur (NOT NULL alanlar dolduruldu)
-    // -----------------------------------------------
     final inserted = await supabase
         .from("companies")
         .insert({
           "user_id": userId,
-          "name": "Firma Adı", // NOT NULL zorunluluğu giderildi
-          "address": "", // NULL olmayan alan varsa doldur
+          "name": "Firma Adı",
+          "address": "",
           "phone": "",
           "email": "",
         })
@@ -49,12 +45,11 @@ class SettingsService {
   }
 
   // -----------------------------------------------------------
-  // GET SETTINGS (yoksa otomatik oluşturur)
+  // GET SETTINGS — yoksa oluştur
   // -----------------------------------------------------------
   Future<Map<String, dynamic>> getSettings() async {
     final companyId = await _getCompanyId();
 
-    // Var mı?
     final existing = await supabase
         .from("settings")
         .select()
@@ -62,12 +57,15 @@ class SettingsService {
         .maybeSingle();
 
     if (existing != null) {
-      return Map<String, dynamic>.from(existing);
+      final data = Map<String, dynamic>.from(existing);
+
+      // default_currency yoksa TRY olarak ekleyelim (güvenlik için)
+      data["default_currency"] ??= "TRY";
+
+      return data;
     }
 
-    // -----------------------------------------------
-    // Yoksa default oluştur
-    // -----------------------------------------------
+    // İlk defa oluşturuluyor → INSERT
     final defaultData = {
       "company_id": companyId,
       "company_name": "Firma Adı",
@@ -78,24 +76,26 @@ class SettingsService {
       "default_tax_rate": 20,
       "invoice_footer": "",
       "company_logo_url": null,
+      "default_currency": "TRY", // 💰 Varsayılan para birimi
     };
 
-    await supabase.from("settings").upsert(defaultData);
+    await supabase.from("settings").insert(defaultData);
 
     return defaultData;
   }
 
   // -----------------------------------------------------------
-  // SAVE SETTINGS
+  // SAVE SETTINGS — her zaman UPDATE
+  // (data içinde default_currency varsa Supabase'e gider)
   // -----------------------------------------------------------
   Future<void> saveSettings(Map<String, dynamic> data) async {
     final companyId = await _getCompanyId();
 
-    await supabase.from("settings").upsert({"company_id": companyId, ...data});
+    await supabase.from("settings").update(data).eq("company_id", companyId);
   }
 
   // -----------------------------------------------------------
-  // LOGO UPLOAD (Storage)
+  // LOGO UPLOAD — storage + settings update
   // -----------------------------------------------------------
   Future<String?> uploadLogo(Uint8List fileBytes) async {
     try {
@@ -113,6 +113,11 @@ class SettingsService {
           );
 
       final publicUrl = supabase.storage.from(bucket).getPublicUrl(filePath);
+
+      await supabase
+          .from("settings")
+          .update({"company_logo_url": publicUrl})
+          .eq("company_id", companyId);
 
       return publicUrl;
     } catch (e) {

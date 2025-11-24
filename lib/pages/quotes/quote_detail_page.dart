@@ -1,7 +1,10 @@
-// ignore_for_file: use_build_context_synchronously
+// ignore_for_file: deprecated_member_use, unused_local_variable, unused_import, use_build_context_synchronously
 
 import 'package:flutter/material.dart';
+import 'package:redbook/pages/quotes/revision_compare_page.dart';
+import 'package:redbook/pages/quotes/revision_list_page.dart';
 import 'package:redbook/services/quote_pdf_service.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../services/quote_item_service.dart';
 import '../../services/quote_service.dart';
@@ -82,6 +85,35 @@ class _QuoteDetailPageState extends State<QuoteDetailPage> {
     await loadData();
   }
 
+  // ---------------------------------------------------------------------------
+  // MODERN APPBAR ACTION BUTON WIDGET'I
+  // ---------------------------------------------------------------------------
+  Widget _actionButton({
+    required IconData icon,
+    required String tooltip,
+    required Future<void> Function() onTap,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 2),
+      child: Tooltip(
+        message: tooltip,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(8),
+          onTap: () async => await onTap(),
+          child: Ink(
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.9),
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: Colors.black12),
+            ),
+            padding: const EdgeInsets.all(6),
+            child: Icon(icon, size: 18, color: Colors.grey.shade800),
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     if (loading) {
@@ -93,13 +125,27 @@ class _QuoteDetailPageState extends State<QuoteDetailPage> {
     }
 
     // ------------------------------
-    // HESAPLAR
+    // HESAPLAR (YENİ FORMÜL)
     // ------------------------------
-    final subtotal = (quote!['subtotal'] ?? 0).toDouble();
-    final tax = (quote!['tax'] ?? 0).toDouble();
-    final discount = (quote!['discount'] ?? 0).toDouble();
-    final totalBeforeDiscount = (quote!['total'] ?? 0).toDouble();
-    final finalTotal = (quote!['total_after_discount'] ?? totalBeforeDiscount)
+    // DB alanlarını mümkün olduğunca kullan, yoksa fallback yap
+    final subtotal = (quote!['subtotal'] ?? 0).toDouble(); // Ara Toplam
+    final discount = (quote!['discount'] ?? 0).toDouble(); // Toplam indirim
+
+    // vergi tutarı: yeni şema'da 'tax_amount' varsa onu, yoksa 'tax'
+    final tax = (quote!['tax_amount'] ?? quote!['tax'] ?? 0).toDouble();
+
+    // Vergi matrahı = Ara Toplam - İndirim
+    final taxableBase = subtotal - discount;
+
+    // total_before_discount kolonun varsa, onu da bozmadan kullan
+    final totalBeforeDiscount = (quote!['total_before_discount'] ?? subtotal)
+        .toDouble();
+
+    // Genel toplam = vergi matrahı + KDV
+    final grandTotal = taxableBase + tax;
+
+    // Net ödenecek – total_after_discount alanı varsa oradan, yoksa grandTotal
+    final netPayable = (quote!['total_after_discount'] ?? grandTotal)
         .toDouble();
 
     final discountType = quote!['discount_type'] ?? 'none';
@@ -109,64 +155,146 @@ class _QuoteDetailPageState extends State<QuoteDetailPage> {
     final quoteIdStr = quote!['id'].toString();
 
     return Scaffold(
+      backgroundColor: const Color(0xffFBF7FF),
       appBar: AppBar(
-        title: const Text('Teklif Detayı'),
+        backgroundColor: const Color(0xffFBF7FF),
+        elevation: 0,
+        titleSpacing: 0,
+        title: const Text(
+          'Teklif Detayı',
+          style: TextStyle(fontWeight: FontWeight.w600),
+        ),
         actions: [
-          // ✏ Teklifi Düzenle
-          IconButton(
-            icon: const Icon(Icons.edit),
-            onPressed: () async {
-              await Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => QuoteEditPage(quoteId: quoteIdStr),
-                ),
-              );
-              await loadData();
-            },
-          ),
-
-          // 📄 Kopyala
-          IconButton(
-            icon: const Icon(Icons.copy),
-            onPressed: () async {
-              final newId = await quoteService.duplicateQuote(quoteIdStr);
-
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Teklif başarıyla kopyalandı')),
-              );
-
-              await Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => QuoteDetailPage(quoteId: newId),
-                ),
-              );
-            },
-          ),
-
-          // 📄 PDF
-          IconButton(
-            icon: const Icon(Icons.picture_as_pdf),
-            onPressed: () async {
-              if (settings == null) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text(
-                      'Önce Ayarlar sayfasından firma bilgilerini kaydedin.',
+          Row(
+            children: [
+              // ✏ Düzenle
+              _actionButton(
+                icon: Icons.edit,
+                tooltip: 'Teklifi Düzenle',
+                onTap: () async {
+                  await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => QuoteEditPage(quoteId: quoteIdStr),
                     ),
-                  ),
-                );
-                return;
-              }
+                  );
+                  await loadData();
+                },
+              ),
 
-              await QuotePdfService.generateAndShare(
-                quote: quote!,
-                customer: customer!,
-                items: items,
-                settings: settings!,
-              );
-            },
+              // 📄 Kopyala
+              _actionButton(
+                icon: Icons.copy,
+                tooltip: 'Teklifi Kopyala',
+                onTap: () async {
+                  final newId = await quoteService.duplicateQuote(quoteIdStr);
+
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Teklif kopyalandı')),
+                  );
+
+                  await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => QuoteDetailPage(quoteId: newId),
+                    ),
+                  );
+                },
+              ),
+
+              // PDF
+              _actionButton(
+                icon: Icons.picture_as_pdf,
+                tooltip: 'PDF Oluştur / Paylaş',
+                onTap: () async {
+                  if (settings == null) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text(
+                          'Önce Ayarlar sayfasından firma bilgilerini kaydedin.',
+                        ),
+                      ),
+                    );
+                    return;
+                  }
+
+                  await QuotePdfService.generateAndShare(
+                    quote: quote!,
+                    customer: customer!,
+                    items: items,
+                    settings: settings!,
+                  );
+                },
+              ),
+
+              // 💾 Revizyon Kaydet
+              _actionButton(
+                icon: Icons.save_alt,
+                tooltip: 'Revizyon Kaydet',
+                onTap: () async {
+                  await loadData(); // emin olmak için güncel veriyi çek
+                  await quoteService.saveRevision(widget.quoteId);
+
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Revizyon kaydedildi')),
+                  );
+                },
+              ),
+
+              // 📜 Revizyon Geçmişi
+              _actionButton(
+                icon: Icons.history,
+                tooltip: 'Revizyon Geçmişi',
+                onTap: () async {
+                  await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => RevisionListPage(quoteId: widget.quoteId),
+                    ),
+                  );
+                },
+              ),
+
+              // 🆚 Son revizyon ile karşılaştır
+              _actionButton(
+                icon: Icons.compare_arrows,
+                tooltip: 'Son Revizyon ile Karşılaştır',
+                onTap: () async {
+                  final client = Supabase.instance.client;
+
+                  final revisions = await client
+                      .from("quote_revisions")
+                      .select()
+                      .eq("quote_id", widget.quoteId)
+                      .order("revision_number", ascending: false);
+
+                  if (revisions.isEmpty) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text("Henüz revizyon yok.")),
+                    );
+                    return;
+                  }
+
+                  final latest = revisions.first;
+
+                  final currentSnapshot = await quoteService.getQuoteSnapshot(
+                    widget.quoteId,
+                  );
+
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => RevisionComparePage(
+                        revision: latest["snapshot"],
+                        current: currentSnapshot,
+                      ),
+                    ),
+                  );
+                },
+              ),
+
+              const SizedBox(width: 6),
+            ],
           ),
         ],
       ),
@@ -216,7 +344,6 @@ class _QuoteDetailPageState extends State<QuoteDetailPage> {
                       if (v == null) return;
 
                       await quoteService.updateQuote(id: quoteIdStr, status: v);
-
                       await loadData();
                     },
                   ),
@@ -297,10 +424,8 @@ class _QuoteDetailPageState extends State<QuoteDetailPage> {
 
           const Divider(height: 32),
 
-          // TOPLAMLAR
+          // TOPLAMLAR – Yeni formül görünümü
           _totalRow('Ara Toplam', subtotal),
-          _totalRow('KDV (%20)', tax),
-
           if (discountType != 'none')
             _totalRow(
               discountType == 'percent'
@@ -309,9 +434,11 @@ class _QuoteDetailPageState extends State<QuoteDetailPage> {
               -discount,
               red: true,
             ),
-
-          _totalRow('Genel Toplam', totalBeforeDiscount),
-          _totalRow('Net Ödenecek', finalTotal, big: true),
+          _totalRow('Vergi Matrahı', taxableBase),
+          _totalRow('KDV', tax),
+          const SizedBox(height: 8),
+          _totalRow('Genel Toplam', grandTotal, big: true),
+          _totalRow('Net Ödenecek', netPayable, big: true),
         ],
       ),
     );

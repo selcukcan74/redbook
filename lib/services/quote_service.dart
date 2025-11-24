@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_print
+// ignore_for_file: curly_braces_in_flow_control_structures, avoid_print
 
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -12,23 +12,20 @@ class QuoteService {
     final user = supabase.auth.currentUser;
     if (user == null) throw Exception("Kullanıcı oturumu bulunamadı.");
 
-    final userId = user.id;
-
-    // Kullanıcıya ait company var mı?
     final existing = await supabase
         .from("companies")
         .select("id")
-        .eq("user_id", userId)
+        .eq("user_id", user.id)
         .maybeSingle();
 
     if (existing != null && existing["id"] != null) {
       return existing["id"].toString();
     }
 
-    // Yoksa zorunlu 'name' alanı ile company oluştur
+    // Zorunlu name ile company oluştur
     final inserted = await supabase
         .from("companies")
-        .insert({"user_id": userId, "name": "Firma Adı"})
+        .insert({"user_id": user.id, "name": "Firma Adı"})
         .select("id")
         .maybeSingle();
 
@@ -84,13 +81,14 @@ class QuoteService {
   }
 
   // --------------------------------------------------------
-  // TEKLİF OLUŞTUR
+  // TEKLİF OLUŞTUR (CURRENCY EKLENDİ)
   // --------------------------------------------------------
   Future<Map<String, dynamic>> addQuote({
     required String customerId,
     DateTime? issueDate,
     DateTime? validUntil,
     String? notes,
+    String currency = "TRY",
   }) async {
     final cid = await _getCompanyId();
 
@@ -106,13 +104,13 @@ class QuoteService {
       "status": "draft",
       "quote_number": quoteNumber,
 
-      // Hesaplamalar
+      "currency": currency,
+
       "subtotal": 0,
       "tax": 0,
       "total": 0,
       "total_after_discount": 0,
 
-      // İndirim
       "discount_type": "none",
       "discount_rate": 0,
       "discount_amount": 0,
@@ -131,7 +129,7 @@ class QuoteService {
   }
 
   // --------------------------------------------------------
-  // GÜNCELLE
+  // GÜNCELLE (CURRENCY EKLENDİ)
   // --------------------------------------------------------
   Future<void> updateQuote({
     required String id,
@@ -142,21 +140,22 @@ class QuoteService {
     String? discountType,
     double? discountRate,
     double? discountAmount,
+    String? currency,
   }) async {
     final updateData = <String, dynamic>{};
 
     if (customerId != null) updateData["customer_id"] = customerId;
     if (notes != null) updateData["notes"] = notes;
-
     if (validUntil != null) {
       updateData["valid_until"] = validUntil.toIso8601String();
     }
-
     if (status != null) updateData["status"] = status;
 
     if (discountType != null) updateData["discount_type"] = discountType;
     if (discountRate != null) updateData["discount_rate"] = discountRate;
     if (discountAmount != null) updateData["discount_amount"] = discountAmount;
+
+    if (currency != null) updateData["currency"] = currency;
 
     if (updateData.isNotEmpty) {
       await supabase.from("quotes").update(updateData).eq("id", id);
@@ -176,6 +175,7 @@ class QuoteService {
   // TOPLAM HESAPLAMA
   // --------------------------------------------------------
   Future<void> recalcTotals(String quoteId) async {
+    // 1) Ürünleri çek
     final items = await supabase
         .from("quote_items")
         .select("total")
@@ -186,11 +186,7 @@ class QuoteService {
       subtotal += (i["total"] as num).toDouble();
     }
 
-    const taxRate = 0.20;
-    final taxAmount = subtotal * taxRate;
-    final totalBefore = subtotal + taxAmount;
-
-    // Mevcut indirim bilgileri
+    // 2) Teklif indirim bilgilerini çek
     final quote = await supabase
         .from("quotes")
         .select("discount_type, discount_rate, discount_amount")
@@ -201,29 +197,40 @@ class QuoteService {
 
     if (quote != null) {
       final type = quote["discount_type"];
-      final rate = (quote["discount_rate"] as num?)?.toDouble() ?? 0;
-      final amount = (quote["discount_amount"] as num?)?.toDouble() ?? 0;
+      final rate = (quote["discount_rate"] ?? 0).toDouble();
+      final fixed = (quote["discount_amount"] ?? 0).toDouble();
 
       if (type == "percent") {
-        discount = totalBefore * (rate / 100.0);
+        // YENİ DOĞRU FORMÜL: % indirim = subtotal üzerinden
+        discount = subtotal * (rate / 100);
       } else if (type == "fixed") {
-        discount = amount;
+        discount = fixed;
       }
     }
 
+    // İndirim asla negatife düşmesin
     if (discount < 0) discount = 0;
-    if (discount > totalBefore) discount = totalBefore;
+    if (discount > subtotal) discount = subtotal;
 
-    final finalTotal = totalBefore - discount;
+    // 3) İndirim sonrası net tutar
+    final afterDiscount = subtotal - discount;
 
+    // 4) KDV hesaplama (yeni formül – indirim SONRASI)
+    const taxRate = 0.20; // %20
+    final taxAmount = afterDiscount * taxRate;
+
+    // 5) Genel toplam
+    final total = afterDiscount + taxAmount;
+
+    // 6) DB güncelle
     await supabase
         .from("quotes")
         .update({
           "subtotal": subtotal,
-          "tax": taxAmount,
-          "total": totalBefore,
           "discount": discount,
-          "total_after_discount": finalTotal,
+          "tax": taxAmount,
+          "total": total,
+          "total_after_discount": total,
         })
         .eq("id", quoteId);
   }
@@ -268,9 +275,7 @@ class QuoteService {
         .eq("id", quoteId)
         .maybeSingle();
 
-    if (orig == null) {
-      throw Exception("Orijinal teklif bulunamadı.");
-    }
+    if (orig == null) throw Exception("Orijinal teklif bulunamadı.");
 
     final dailyCount = await countQuotesToday() + 1;
     final newNumber = generateQuoteNumber(dailyCount);
@@ -283,6 +288,7 @@ class QuoteService {
       "notes": orig["notes"],
       "status": "draft",
       "quote_number": newNumber,
+      "currency": orig["currency"],
       "discount_type": orig["discount_type"],
       "discount_rate": orig["discount_rate"],
       "discount_amount": orig["discount_amount"],
@@ -319,5 +325,195 @@ class QuoteService {
     await recalcTotals(newId);
 
     return newId;
+  }
+
+  // --------------------------------------------------------
+  // REVİZYONDAN GERİ YÜKLE
+  // --------------------------------------------------------
+  Future<void> restoreFromRevision(String revisionId) async {
+    final rev = await supabase
+        .from("quote_revisions")
+        .select()
+        .eq("id", revisionId)
+        .maybeSingle();
+
+    if (rev == null) throw Exception("Revizyon bulunamadı");
+
+    final snapshot = rev["snapshot"];
+    final quote = snapshot["quote"];
+    final items = List<Map<String, dynamic>>.from(snapshot["items"] ?? []);
+
+    final quoteId = quote["id"];
+
+    // Teklif güncelle
+    await supabase
+        .from("quotes")
+        .update({
+          "customer_id": quote["customer_id"],
+          "issue_date": quote["issue_date"],
+          "valid_until": quote["valid_until"],
+          "notes": quote["notes"],
+          "discount_type": quote["discount_type"],
+          "discount_rate": quote["discount_rate"],
+          "discount_amount": quote["discount_amount"],
+          "subtotal": quote["subtotal"],
+          "tax": quote["tax"],
+          "total": quote["total"],
+          "total_after_discount": quote["total_after_discount"],
+        })
+        .eq("id", quoteId);
+
+    // Ürünleri sil
+    await supabase.from("quote_items").delete().eq("quote_id", quoteId);
+
+    // Eski ürünleri geri yükle
+    for (final it in items) {
+      await supabase.from("quote_items").insert({
+        "quote_id": quoteId,
+        "description": it["description"],
+        "unit_price": it["unit_price"],
+        "quantity": it["quantity"],
+        "unit": it["unit"],
+        "total": it["total"],
+        "product_id": it["product_id"],
+      });
+    }
+  }
+
+  // --------------------------------------------------------
+  // REVİZYON KAYDET
+  // --------------------------------------------------------
+  Future<void> saveRevision(String quoteId) async {
+    final supabase = Supabase.instance.client;
+
+    // 1) Teklif
+    final quote = await supabase
+        .from("quotes")
+        .select()
+        .eq("id", quoteId)
+        .maybeSingle();
+
+    if (quote == null) throw Exception("Teklif bulunamadı.");
+
+    // 2) Ürünler
+    final items = await supabase
+        .from("quote_items")
+        .select()
+        .eq("quote_id", quoteId);
+
+    // Ara toplam
+    double subtotal = 0;
+    for (final i in items) {
+      subtotal += (i["total"] as num).toDouble();
+    }
+
+    // 3) İndirim
+    final type = quote["discount_type"];
+    final rate = (quote["discount_rate"] ?? 0).toDouble();
+    final fixed = (quote["discount_amount"] ?? 0).toDouble();
+
+    double discount = 0;
+
+    if (type == "percent") {
+      discount = subtotal * (rate / 100);
+    } else if (type == "fixed") {
+      discount = fixed;
+    }
+
+    if (discount < 0) discount = 0;
+    if (discount > subtotal) discount = subtotal;
+
+    // 4) İndirim sonrası ara toplam
+    final afterDiscount = subtotal - discount;
+
+    // 5) KDV
+    const taxRate = 0.20;
+    final tax = afterDiscount * taxRate;
+
+    // 6) Genel toplam
+    final finalTotal = afterDiscount + tax;
+
+    // 7) Müşteri
+    final customerId = quote["customer_id"]?.toString();
+    Map<String, dynamic>? customer;
+
+    if (customerId != null) {
+      final raw = await supabase
+          .from("customers")
+          .select()
+          .eq("id", customerId)
+          .maybeSingle();
+
+      if (raw != null) customer = Map<String, dynamic>.from(raw);
+    }
+
+    // 8) Son revizyon numarası
+    final last = await supabase
+        .from("quote_revisions")
+        .select("revision_number")
+        .eq("quote_id", quoteId)
+        .order("revision_number", ascending: false)
+        .limit(1)
+        .maybeSingle();
+
+    final next = last == null ? 1 : (last["revision_number"] as int) + 1;
+
+    // 9) Snapshot
+    final snapshot = {
+      "quote": {
+        ...quote,
+        "subtotal": subtotal,
+        "discount": discount,
+        "tax": tax,
+        "total": finalTotal,
+        "total_after_discount": finalTotal,
+      },
+      "items": items,
+      "customer": customer,
+    };
+
+    // 10) Kaydet
+    await supabase.from("quote_revisions").insert({
+      "company_id": quote["company_id"],
+      "quote_id": quoteId,
+      "revision_number": next,
+      "snapshot": snapshot,
+    });
+  }
+
+  // --------------------------------------------------------
+  // AKTÜEL TEKLİF SNAPSHOT
+  // --------------------------------------------------------
+  Future<Map<String, dynamic>> getQuoteSnapshot(String quoteId) async {
+    // 1) Teklif
+    final quote = await supabase
+        .from("quotes")
+        .select()
+        .eq("id", quoteId)
+        .maybeSingle();
+
+    if (quote == null) throw Exception("Teklif bulunamadı");
+
+    // 2) Ürünler
+    final items = await supabase
+        .from("quote_items")
+        .select()
+        .eq("quote_id", quoteId);
+
+    // 3) Müşteri
+    final customerId = quote["customer_id"]?.toString();
+    Map<String, dynamic>? customer;
+
+    if (customerId != null) {
+      final c = await supabase
+          .from("customers")
+          .select()
+          .eq("id", customerId)
+          .maybeSingle();
+
+      if (c != null) customer = Map<String, dynamic>.from(c);
+    }
+
+    return {"quote": quote, "items": items, "customer": customer};
   }
 }

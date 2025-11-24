@@ -94,9 +94,9 @@ class _CustomersListPageState extends State<CustomersListPage> {
                             ),
 
                             title: Text(
-                              c["company"]?.toString().isNotEmpty == true
-                                  ? c["company"]
-                                  : c["name"],
+                              c["name"]?.toString().isNotEmpty == true
+                                  ? c["name"]
+                                  : c["company"],
                               style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,

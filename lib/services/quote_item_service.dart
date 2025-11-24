@@ -67,8 +67,8 @@ class QuoteItemService {
 
     await supabase.from("quote_items").insert(insertData);
 
-    // Toplamları güncelle
-    await supabase.rpc("recalc_quote_totals", params: {"qid": quoteId});
+    // 🔥 Yeni parametre adı ile RPC çağır
+    await supabase.rpc("recalc_quote_totals", params: {"p_quote_id": quoteId});
   }
 
   // --------------------------------------------------------
