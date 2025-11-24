@@ -8,6 +8,8 @@
       "version": "1.0.0+1",
       "dependencies": [
         "cupertino_icons",
+        "file_picker",
+        "fl_chart",
         "flutter",
         "flutter_dotenv",
         "glassmorphism_widgets",
@@ -45,6 +47,31 @@
         "stack_trace",
         "stream_channel",
         "test_api",
+        "vector_math"
+      ]
+    },
+    {
+      "name": "file_picker",
+      "version": "10.3.7",
+      "dependencies": [
+        "cross_file",
+        "dbus",
+        "ffi",
+        "flutter",
+        "flutter_plugin_android_lifecycle",
+        "flutter_web_plugins",
+        "path",
+        "plugin_platform_interface",
+        "web",
+        "win32"
+      ]
+    },
+    {
+      "name": "fl_chart",
+      "version": "1.1.1",
+      "dependencies": [
+        "equatable",
+        "flutter",
         "vector_math"
       ]
     },
@@ -239,6 +266,70 @@
       ]
     },
     {
+      "name": "dbus",
+      "version": "0.7.11",
+      "dependencies": [
+        "args",
+        "ffi",
+        "meta",
+        "xml"
+      ]
+    },
+    {
+      "name": "web",
+      "version": "1.1.1",
+      "dependencies": []
+    },
+    {
+      "name": "cross_file",
+      "version": "0.3.5+1",
+      "dependencies": [
+        "meta",
+        "web"
+      ]
+    },
+    {
+      "name": "win32",
+      "version": "5.15.0",
+      "dependencies": [
+        "ffi"
+      ]
+    },
+    {
+      "name": "ffi",
+      "version": "2.1.4",
+      "dependencies": []
+    },
+    {
+      "name": "plugin_platform_interface",
+      "version": "2.1.8",
+      "dependencies": [
+        "meta"
+      ]
+    },
+    {
+      "name": "flutter_plugin_android_lifecycle",
+      "version": "2.0.33",
+      "dependencies": [
+        "flutter"
+      ]
+    },
+    {
+      "name": "flutter_web_plugins",
+      "version": "0.0.0",
+      "dependencies": [
+        "flutter"
+      ]
+    },
+    {
+      "name": "equatable",
+      "version": "2.0.7",
+      "dependencies": [
+        "collection",
+        "meta"
+      ]
+    },
+    {
       "name": "image_picker_windows",
       "version": "0.2.2",
       "dependencies": [
@@ -299,23 +390,11 @@
     },
     {
       "name": "image_picker_android",
-      "version": "0.8.13+9",
+      "version": "0.8.13+10",
       "dependencies": [
         "flutter",
         "flutter_plugin_android_lifecycle",
         "image_picker_platform_interface"
-      ]
-    },
-    {
-      "name": "web",
-      "version": "1.1.1",
-      "dependencies": []
-    },
-    {
-      "name": "plugin_platform_interface",
-      "version": "2.1.8",
-      "dependencies": [
-        "meta"
       ]
     },
     {
@@ -344,18 +423,6 @@
         "meta",
         "web"
       ]
-    },
-    {
-      "name": "flutter_web_plugins",
-      "version": "0.0.0",
-      "dependencies": [
-        "flutter"
-      ]
-    },
-    {
-      "name": "ffi",
-      "version": "2.1.4",
-      "dependencies": []
     },
     {
       "name": "xml",
@@ -547,6 +614,11 @@
       ]
     },
     {
+      "name": "args",
+      "version": "2.7.0",
+      "dependencies": []
+    },
+    {
       "name": "file_selector_windows",
       "version": "0.9.3+5",
       "dependencies": [
@@ -566,16 +638,8 @@
       ]
     },
     {
-      "name": "cross_file",
-      "version": "0.3.5+1",
-      "dependencies": [
-        "meta",
-        "web"
-      ]
-    },
-    {
       "name": "file_selector_macos",
-      "version": "0.9.4+6",
+      "version": "0.9.5",
       "dependencies": [
         "cross_file",
         "file_selector_platform_interface",
@@ -584,7 +648,7 @@
     },
     {
       "name": "file_selector_linux",
-      "version": "0.9.3+3",
+      "version": "0.9.4",
       "dependencies": [
         "cross_file",
         "file_selector_platform_interface",
@@ -595,13 +659,6 @@
       "name": "mime",
       "version": "2.0.0",
       "dependencies": []
-    },
-    {
-      "name": "flutter_plugin_android_lifecycle",
-      "version": "2.0.32",
-      "dependencies": [
-        "flutter"
-      ]
     },
     {
       "name": "http_parser",
@@ -689,7 +746,7 @@
     },
     {
       "name": "shared_preferences_android",
-      "version": "2.4.16",
+      "version": "2.4.17",
       "dependencies": [
         "flutter",
         "shared_preferences_platform_interface"
@@ -737,7 +794,7 @@
     },
     {
       "name": "path_provider_android",
-      "version": "2.2.21",
+      "version": "2.2.22",
       "dependencies": [
         "flutter",
         "path_provider_platform_interface"
@@ -795,7 +852,7 @@
     },
     {
       "name": "url_launcher_android",
-      "version": "6.3.27",
+      "version": "6.3.28",
       "dependencies": [
         "flutter",
         "url_launcher_platform_interface"

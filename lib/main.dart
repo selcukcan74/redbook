@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-//import 'package:redbook/pages/auth/login_page.dart';
+import 'package:redbook/pages/auth/login_page.dart';
 import 'package:redbook/pages/home_page.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -26,9 +26,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       routes: {
-        //'/': (context) => const LoginPage(),
-        //'/home': (context) => const HomePage(),
-        '/': (context) => const HomePage(),
+        '/': (context) => const LoginPage(),
+        '/home': (context) => const HomePage(),
+        //'/': (context) => const HomePage(),
         '/verify': (context) => const VerifyQuotePage(),
       },
       theme: ThemeData(

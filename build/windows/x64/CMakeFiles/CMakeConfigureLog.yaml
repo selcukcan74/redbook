@@ -72,7 +72,7 @@ events:
       The output was:
       0
       .NET Framework i├ğin MSBuild s├╝r├╝m 18.0.2+995a3dce4
-      Olu┼şturma ba┼şlat─▒ld─▒: 22.11.2025 02:13:25.
+      Olu┼şturma ba┼şlat─▒ld─▒: 22.11.2025 17:23:25.
       
       1 d├╝─ş├╝m├╝nde "C:\\Users\\selcu\\Documents\\FlutterProjects\\redbook\\build\\windows\\x64\\CMakeFiles\\4.1.1-msvc1\\CompilerIdCXX\\CompilerIdCXX.vcxproj" projesi (varsay─▒lan hedefler).
       PrepareForBuild:
@@ -101,7 +101,7 @@ events:
           0 Uyar─▒
           0 Hata
       
-      Ge├ğen S├╝re 00:00:02.09
+      Ge├ğen S├╝re 00:00:02.43
       
       
       Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "CompilerIdCXX.exe"
@@ -765,8 +765,8 @@ events:
     checks:
       - "Detecting CXX compiler ABI info"
     directories:
-      source: "C:/Users/selcu/Documents/FlutterProjects/redbook/build/windows/x64/CMakeFiles/CMakeScratch/TryCompile-8uykwl"
-      binary: "C:/Users/selcu/Documents/FlutterProjects/redbook/build/windows/x64/CMakeFiles/CMakeScratch/TryCompile-8uykwl"
+      source: "C:/Users/selcu/Documents/FlutterProjects/redbook/build/windows/x64/CMakeFiles/CMakeScratch/TryCompile-esyavx"
+      binary: "C:/Users/selcu/Documents/FlutterProjects/redbook/build/windows/x64/CMakeFiles/CMakeScratch/TryCompile-esyavx"
     cmakeVariables:
       CMAKE_CXX_FLAGS: "/DWIN32 /D_WINDOWS /W3 /GR /EHsc"
       CMAKE_CXX_FLAGS_DEBUG: "/MDd /Zi /Ob0 /Od /RTC1"
@@ -776,40 +776,40 @@ events:
       variable: "CMAKE_CXX_ABI_COMPILED"
       cached: true
       stdout: |
-        Change Dir: 'C:/Users/selcu/Documents/FlutterProjects/redbook/build/windows/x64/CMakeFiles/CMakeScratch/TryCompile-8uykwl'
+        Change Dir: 'C:/Users/selcu/Documents/FlutterProjects/redbook/build/windows/x64/CMakeFiles/CMakeScratch/TryCompile-esyavx'
         
-        Run Build Command(s): "C:/Program Files/Microsoft Visual Studio/18/Community/MSBuild/Current/Bin/amd64/MSBuild.exe" cmTC_5775e.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=18.0 /v:n
+        Run Build Command(s): "C:/Program Files/Microsoft Visual Studio/18/Community/MSBuild/Current/Bin/amd64/MSBuild.exe" cmTC_1169b.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=18.0 /v:n
         .NET Framework i├ğin MSBuild s├╝r├╝m 18.0.2+995a3dce4
-        Olu┼şturma ba┼şlat─▒ld─▒: 22.11.2025 02:13:28.
+        Olu┼şturma ba┼şlat─▒ld─▒: 22.11.2025 17:23:29.
         
-        1 d├╝─ş├╝m├╝nde "C:\\Users\\selcu\\Documents\\FlutterProjects\\redbook\\build\\windows\\x64\\CMakeFiles\\CMakeScratch\\TryCompile-8uykwl\\cmTC_5775e.vcxproj" projesi (varsay─▒lan hedefler).
+        1 d├╝─ş├╝m├╝nde "C:\\Users\\selcu\\Documents\\FlutterProjects\\redbook\\build\\windows\\x64\\CMakeFiles\\CMakeScratch\\TryCompile-esyavx\\cmTC_1169b.vcxproj" projesi (varsay─▒lan hedefler).
         PrepareForBuild:
-          "cmTC_5775e.dir\\Debug\\" dizini olu┼şturuluyor.
+          "cmTC_1169b.dir\\Debug\\" dizini olu┼şturuluyor.
           Yap─▒land─▒r─▒lm─▒┼ş ├ğ─▒k─▒┼ş etkinle┼ştirildi. Derleyici tan─▒lamas─▒n─▒n bi├ğimlendirmesi hata hiyerar┼şisini yans─▒t─▒r. Daha fazla ayr─▒nt─▒ i├ğin bkz. https://aka.ms/cpp/structured-output.
-          "C:\\Users\\selcu\\Documents\\FlutterProjects\\redbook\\build\\windows\\x64\\CMakeFiles\\CMakeScratch\\TryCompile-8uykwl\\Debug\\" dizini olu┼şturuluyor.
-          "cmTC_5775e.dir\\Debug\\cmTC_5775e.tlog\\" dizini olu┼şturuluyor.
+          "C:\\Users\\selcu\\Documents\\FlutterProjects\\redbook\\build\\windows\\x64\\CMakeFiles\\CMakeScratch\\TryCompile-esyavx\\Debug\\" dizini olu┼şturuluyor.
+          "cmTC_1169b.dir\\Debug\\cmTC_1169b.tlog\\" dizini olu┼şturuluyor.
         InitializeBuildStatus:
-          "AlwaysCreate" belirtildi─şi i├ğin "cmTC_5775e.dir\\Debug\\cmTC_5775e.tlog\\unsuccessfulbuild" olu┼şturuluyor.
-          "cmTC_5775e.dir\\Debug\\cmTC_5775e.tlog\\unsuccessfulbuild" ├Â─şesine eri┼şiliyor.
+          "AlwaysCreate" belirtildi─şi i├ğin "cmTC_1169b.dir\\Debug\\cmTC_1169b.tlog\\unsuccessfulbuild" olu┼şturuluyor.
+          "cmTC_1169b.dir\\Debug\\cmTC_1169b.tlog\\unsuccessfulbuild" ├Â─şesine eri┼şiliyor.
         ClCompile:
-          C:\\Program Files\\Microsoft Visual Studio\\18\\Community\\VC\\Tools\\MSVC\\14.50.35717\\bin\\HostX64\\x64\\CL.exe /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /EHsc /RTC1 /MDd /GS /fp:precise /GR /Fo"cmTC_5775e.dir\\Debug\\\\" /Fd"cmTC_5775e.dir\\Debug\\vc145.pdb" /external:W3 /Gd /TP /errorReport:queue "C:\\Program Files\\Microsoft Visual Studio\\18\\Community\\Common7\\IDE\\CommonExtensions\\Microsoft\\CMake\\CMake\\share\\cmake-4.1\\Modules\\CMakeCXXCompilerABI.cpp"
+          C:\\Program Files\\Microsoft Visual Studio\\18\\Community\\VC\\Tools\\MSVC\\14.50.35717\\bin\\HostX64\\x64\\CL.exe /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /EHsc /RTC1 /MDd /GS /fp:precise /GR /Fo"cmTC_1169b.dir\\Debug\\\\" /Fd"cmTC_1169b.dir\\Debug\\vc145.pdb" /external:W3 /Gd /TP /errorReport:queue "C:\\Program Files\\Microsoft Visual Studio\\18\\Community\\Common7\\IDE\\CommonExtensions\\Microsoft\\CMake\\CMake\\share\\cmake-4.1\\Modules\\CMakeCXXCompilerABI.cpp"
           x64 i├ğin Microsoft (R) C/C++ ─░yile┼ştirmeli Derleyicisi S├╝r├╝m 19.50.35717
           Telif Hakk─▒ (C) Microsoft Corporation. T├╝m haklar─▒ sakl─▒d─▒r.
-          cl /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /EHsc /RTC1 /MDd /GS /fp:precise /GR /Fo"cmTC_5775e.dir\\Debug\\\\" /Fd"cmTC_5775e.dir\\Debug\\vc145.pdb" /external:W3 /Gd /TP /errorReport:queue "C:\\Program Files\\Microsoft Visual Studio\\18\\Community\\Common7\\IDE\\CommonExtensions\\Microsoft\\CMake\\CMake\\share\\cmake-4.1\\Modules\\CMakeCXXCompilerABI.cpp"
+          cl /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /EHsc /RTC1 /MDd /GS /fp:precise /GR /Fo"cmTC_1169b.dir\\Debug\\\\" /Fd"cmTC_1169b.dir\\Debug\\vc145.pdb" /external:W3 /Gd /TP /errorReport:queue "C:\\Program Files\\Microsoft Visual Studio\\18\\Community\\Common7\\IDE\\CommonExtensions\\Microsoft\\CMake\\CMake\\share\\cmake-4.1\\Modules\\CMakeCXXCompilerABI.cpp"
           CMakeCXXCompilerABI.cpp
         Link:
-          C:\\Program Files\\Microsoft Visual Studio\\18\\Community\\VC\\Tools\\MSVC\\14.50.35717\\bin\\HostX64\\x64\\link.exe /OUT:"C:\\Users\\selcu\\Documents\\FlutterProjects\\redbook\\build\\windows\\x64\\CMakeFiles\\CMakeScratch\\TryCompile-8uykwl\\Debug\\cmTC_5775e.exe" /INCREMENTAL /ILK:"cmTC_5775e.dir\\Debug\\cmTC_5775e.ilk" /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:/Users/selcu/Documents/FlutterProjects/redbook/build/windows/x64/CMakeFiles/CMakeScratch/TryCompile-8uykwl/Debug/cmTC_5775e.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /IMPLIB:"C:/Users/selcu/Documents/FlutterProjects/redbook/build/windows/x64/CMakeFiles/CMakeScratch/TryCompile-8uykwl/Debug/cmTC_5775e.lib" /MACHINE:X64  /machine:x64 cmTC_5775e.dir\\Debug\\CMakeCXXCompilerABI.obj
-          cmTC_5775e.vcxproj -> C:\\Users\\selcu\\Documents\\FlutterProjects\\redbook\\build\\windows\\x64\\CMakeFiles\\CMakeScratch\\TryCompile-8uykwl\\Debug\\cmTC_5775e.exe
+          C:\\Program Files\\Microsoft Visual Studio\\18\\Community\\VC\\Tools\\MSVC\\14.50.35717\\bin\\HostX64\\x64\\link.exe /OUT:"C:\\Users\\selcu\\Documents\\FlutterProjects\\redbook\\build\\windows\\x64\\CMakeFiles\\CMakeScratch\\TryCompile-esyavx\\Debug\\cmTC_1169b.exe" /INCREMENTAL /ILK:"cmTC_1169b.dir\\Debug\\cmTC_1169b.ilk" /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:/Users/selcu/Documents/FlutterProjects/redbook/build/windows/x64/CMakeFiles/CMakeScratch/TryCompile-esyavx/Debug/cmTC_1169b.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /IMPLIB:"C:/Users/selcu/Documents/FlutterProjects/redbook/build/windows/x64/CMakeFiles/CMakeScratch/TryCompile-esyavx/Debug/cmTC_1169b.lib" /MACHINE:X64  /machine:x64 cmTC_1169b.dir\\Debug\\CMakeCXXCompilerABI.obj
+          cmTC_1169b.vcxproj -> C:\\Users\\selcu\\Documents\\FlutterProjects\\redbook\\build\\windows\\x64\\CMakeFiles\\CMakeScratch\\TryCompile-esyavx\\Debug\\cmTC_1169b.exe
         FinalizeBuildStatus:
-          "cmTC_5775e.dir\\Debug\\cmTC_5775e.tlog\\unsuccessfulbuild" dosyas─▒ siliniyor.
-          "cmTC_5775e.dir\\Debug\\cmTC_5775e.tlog\\cmTC_5775e.lastbuildstate" ├Â─şesine eri┼şiliyor.
-        "C:\\Users\\selcu\\Documents\\FlutterProjects\\redbook\\build\\windows\\x64\\CMakeFiles\\CMakeScratch\\TryCompile-8uykwl\\cmTC_5775e.vcxproj" Projesini Olu┼şturma ─░┼şlemi Tamamland─▒ (varsay─▒lan hedefler).
+          "cmTC_1169b.dir\\Debug\\cmTC_1169b.tlog\\unsuccessfulbuild" dosyas─▒ siliniyor.
+          "cmTC_1169b.dir\\Debug\\cmTC_1169b.tlog\\cmTC_1169b.lastbuildstate" ├Â─şesine eri┼şiliyor.
+        "C:\\Users\\selcu\\Documents\\FlutterProjects\\redbook\\build\\windows\\x64\\CMakeFiles\\CMakeScratch\\TryCompile-esyavx\\cmTC_1169b.vcxproj" Projesini Olu┼şturma ─░┼şlemi Tamamland─▒ (varsay─▒lan hedefler).
         
         Olu┼şturma ba┼şar─▒l─▒ oldu.
             0 Uyar─▒
             0 Hata
         
-        Ge├ğen S├╝re 00:00:01.12
+        Ge├ğen S├╝re 00:00:01.39
         
       exitCode: 0
   -

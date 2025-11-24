@@ -1,4 +1,4 @@
-// ignore_for_file: unused_local_variable, deprecated_member_use, use_build_context_synchronously
+// ignore_for_file: deprecated_member_use, use_build_context_synchronously
 
 import 'package:flutter/material.dart';
 import '../../services/customer_service.dart';
@@ -22,12 +22,13 @@ class _QuoteEditPageState extends State<QuoteEditPage> {
 
   String? selectedCustomerId;
   DateTime? selectedValidDate;
+
   final notesController = TextEditingController();
 
-  // İndirim alanları
+  // İNDİRİM ALANLARI
   String discountType = "none"; // none / percent / fixed
-  final discountRateController = TextEditingController(); // Yüzde
-  final discountAmountController = TextEditingController(); // Sabit tutar
+  final discountRateController = TextEditingController();
+  final discountAmountController = TextEditingController();
 
   bool loading = true;
 
@@ -43,32 +44,49 @@ class _QuoteEditPageState extends State<QuoteEditPage> {
     // Müşteriler
     customers = await customerService.getCustomers();
 
-    // Teklif bilgileri
+    // Teklif
     quote = await quoteService.getQuoteById(widget.quoteId);
 
-    if (quote == null) return;
-
-    // Form doldur
-    selectedCustomerId = quote!["customer_id"];
-    notesController.text = quote!["notes"] ?? "";
-
-    if (quote!["valid_until"] != null) {
-      selectedValidDate = DateTime.parse(quote!["valid_until"]);
+    if (quote == null) {
+      setState(() => loading = false);
+      return;
     }
 
-    // İndirimi forma yükle
+    // ------------------------------
+    // FORM DOLDUR
+    // ------------------------------
+
+    // Müşteri ID (her ihtimale karşı string normalize ediyoruz)
+    selectedCustomerId = quote!["customer_id"]?.toString();
+
+    // Notlar
+    notesController.text = quote!["notes"] ?? "";
+
+    // Tarih
+    if (quote!["valid_until"] != null) {
+      selectedValidDate = DateTime.tryParse(quote!["valid_until"]);
+    }
+
+    // İNDİRİM
     discountType = quote!["discount_type"] ?? "none";
-    discountRateController.text = (quote!["discount_rate"] ?? 0).toString();
-    discountAmountController.text = (quote!["discount_amount"] ?? 0).toString();
+
+    final dbRate = (quote!["discount_rate"] ?? 0).toDouble();
+    final dbAmount = (quote!["discount_amount"] ?? 0).toDouble();
+
+    discountRateController.text = (dbRate == 0 || discountType != "percent")
+        ? ""
+        : dbRate.toString();
+
+    discountAmountController.text = (dbAmount == 0 || discountType != "fixed")
+        ? ""
+        : dbAmount.toString();
 
     setState(() => loading = false);
   }
 
   Future<void> save() async {
-    final double parsedRate = double.tryParse(discountRateController.text) ?? 0;
-
-    final double parsedAmount =
-        double.tryParse(discountAmountController.text) ?? 0;
+    final parsedRate = double.tryParse(discountRateController.text) ?? 0;
+    final parsedAmount = double.tryParse(discountAmountController.text) ?? 0;
 
     await quoteService.updateQuote(
       id: widget.quoteId,
@@ -77,15 +95,10 @@ class _QuoteEditPageState extends State<QuoteEditPage> {
       validUntil: selectedValidDate,
       status: quote!["status"],
 
-      // İndirim ile ilgili parametreler
+      // İndirim
       discountType: discountType,
-      discountRate: discountType == "percent"
-          ? (double.tryParse(discountRateController.text) ?? 0) / 100
-          : 0,
-
-      discountAmount: discountType == "fixed"
-          ? double.tryParse(discountAmountController.text) ?? 0
-          : 0,
+      discountRate: discountType == "percent" ? parsedRate : 0,
+      discountAmount: discountType == "fixed" ? parsedAmount : 0,
     );
 
     Navigator.pop(context, true);
@@ -104,7 +117,7 @@ class _QuoteEditPageState extends State<QuoteEditPage> {
         child: ListView(
           children: [
             // -----------------------------
-            // Müşteri
+            // MÜŞTERİ
             // -----------------------------
             const Text(
               "Müşteri",
@@ -119,7 +132,7 @@ class _QuoteEditPageState extends State<QuoteEditPage> {
                 border: OutlineInputBorder(),
               ),
               items: customers.map<DropdownMenuItem<String>>((c) {
-                return DropdownMenuItem<String>(
+                return DropdownMenuItem(
                   value: c["id"].toString(),
                   child: Text((c["company"] ?? c["name"] ?? "-").toString()),
                 );
@@ -132,7 +145,7 @@ class _QuoteEditPageState extends State<QuoteEditPage> {
             const SizedBox(height: 20),
 
             // -----------------------------
-            // Geçerlilik Tarihi
+            // GEÇERLİLİK TARİHİ
             // -----------------------------
             const Text(
               "Geçerlilik Tarihi",
@@ -161,7 +174,7 @@ class _QuoteEditPageState extends State<QuoteEditPage> {
                 child: Text(
                   selectedValidDate == null
                       ? "Tarih Seç"
-                      : selectedValidDate.toString().substring(0, 10),
+                      : selectedValidDate!.toIso8601String().substring(0, 10),
                 ),
               ),
             ),
@@ -169,7 +182,7 @@ class _QuoteEditPageState extends State<QuoteEditPage> {
             const SizedBox(height: 20),
 
             // -----------------------------
-            // Notlar
+            // NOTLAR
             // -----------------------------
             const Text("Notlar", style: TextStyle(fontWeight: FontWeight.bold)),
             const SizedBox(height: 8),
@@ -195,7 +208,6 @@ class _QuoteEditPageState extends State<QuoteEditPage> {
             ),
             const SizedBox(height: 12),
 
-            // İndirim Tipi
             DropdownButtonFormField<String>(
               value: discountType,
               decoration: const InputDecoration(
@@ -236,10 +248,10 @@ class _QuoteEditPageState extends State<QuoteEditPage> {
                 ),
               ),
 
-            const SizedBox(height: 32),
+            const SizedBox(height: 30),
 
             // -----------------------------
-            // Kaydet
+            // KAYDET
             // -----------------------------
             SizedBox(
               width: double.infinity,

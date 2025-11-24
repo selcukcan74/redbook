@@ -1,11 +1,12 @@
 // ignore_for_file: deprecated_member_use, unused_import, use_super_parameters
 
 import 'package:flutter/material.dart';
+import 'package:fl_chart/fl_chart.dart';
+
 import '../../services/product_service.dart';
 import '../../services/customer_service.dart';
 import '../../services/quote_service.dart';
 
-import '../products/products_page.dart';
 import '../products/product_detail_page.dart';
 
 class DashboardPage extends StatefulWidget {
@@ -26,6 +27,10 @@ class _DashboardPageState extends State<DashboardPage> {
 
   List<Map<String, dynamic>> lastProducts = [];
 
+  // Grafik verileri:
+  List<double> monthlyTotals = List.filled(12, 0); // 12 aylık veri
+  List<double> last30Totals = []; // 30 günlük veri
+
   bool loading = true;
 
   @override
@@ -37,20 +42,37 @@ class _DashboardPageState extends State<DashboardPage> {
   Future<void> loadDashboardData() async {
     setState(() => loading = true);
 
-    // Ürün verileri
+    // Ürünler
     final products = await productService.getProducts();
     totalProducts = products.length;
 
-    // Müşteri verileri
+    // Müşteriler
     final customers = await customerService.getCustomers();
     totalCustomers = customers.length;
 
-    // Teklif verileri
+    // Teklifler
     final quotes = await quoteService.getQuotes();
     totalQuotes = quotes.length;
 
     // Son 5 ürün
     lastProducts = products.take(5).toList();
+
+    // Grafik verilerini demo olarak dolduralım (ileride gerçek veriye bağlanır)
+    monthlyTotals = [
+      100,
+      220,
+      150,
+      400,
+      600,
+      300,
+      700,
+      450,
+      900,
+      800,
+      500,
+      650,
+    ];
+    last30Totals = List.generate(30, (i) => (i * 7 % 100).toDouble());
 
     setState(() => loading = false);
   }
@@ -107,6 +129,28 @@ class _DashboardPageState extends State<DashboardPage> {
 
                   const SizedBox(height: 30),
 
+                  // 📊 AYLIK BARCHART
+                  const Text(
+                    "Aylık Teklif / Satış Grafiği",
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 16),
+
+                  _buildBarChart(),
+
+                  const SizedBox(height: 40),
+
+                  // 📈 LINECHART
+                  const Text(
+                    "Son 30 Gün Performansı",
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 16),
+
+                  _buildLineChart(),
+
+                  const SizedBox(height: 40),
+
                   // ---- LAST PRODUCTS ----
                   const Text(
                     "Son Eklenen Ürünler",
@@ -156,6 +200,9 @@ class _DashboardPageState extends State<DashboardPage> {
     );
   }
 
+  // ---------------------------------------------------------------------
+  // 📌 DASHBOARD STAT KARTI
+  // ---------------------------------------------------------------------
   Widget _statCard({
     required String title,
     required String value,
@@ -188,6 +235,106 @@ class _DashboardPageState extends State<DashboardPage> {
             style: TextStyle(color: color.withOpacity(0.8), fontSize: 15),
           ),
         ],
+      ),
+    );
+  }
+
+  // ---------------------------------------------------------------------
+  // 📊 BAR CHART
+  // ---------------------------------------------------------------------
+  Widget _buildBarChart() {
+    final barGroups = monthlyTotals.asMap().entries.map((entry) {
+      final monthIndex = entry.key;
+      final value = entry.value;
+
+      return BarChartGroupData(
+        x: monthIndex,
+        barRods: [
+          BarChartRodData(
+            toY: value,
+            width: 18,
+            borderRadius: BorderRadius.circular(6),
+            color: Colors.blue,
+          ),
+        ],
+      );
+    }).toList();
+
+    return SizedBox(
+      height: 260,
+      child: BarChart(
+        BarChartData(
+          barGroups: barGroups,
+          gridData: FlGridData(show: false),
+          borderData: FlBorderData(show: false),
+          titlesData: FlTitlesData(
+            leftTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+            rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+            topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+            bottomTitles: AxisTitles(
+              sideTitles: SideTitles(
+                showTitles: true,
+                reservedSize: 26,
+                getTitlesWidget: (value, meta) {
+                  const months = [
+                    "O",
+                    "Ş",
+                    "M",
+                    "N",
+                    "M",
+                    "H",
+                    "T",
+                    "A",
+                    "E",
+                    "E",
+                    "K",
+                    "A",
+                  ];
+                  if (value < 0 || value > 11) return const SizedBox();
+                  return Text(months[value.toInt()]);
+                },
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  // ---------------------------------------------------------------------
+  // 📈 LINE CHART
+  // ---------------------------------------------------------------------
+  Widget _buildLineChart() {
+    if (last30Totals.isEmpty) {
+      return const Text("Grafik verisi yok.");
+    }
+
+    final spots = last30Totals.asMap().entries.map((entry) {
+      return FlSpot(entry.key.toDouble(), entry.value);
+    }).toList();
+
+    final maxY = last30Totals.reduce((a, b) => a > b ? a : b) * 1.2;
+
+    return SizedBox(
+      height: 220,
+      child: LineChart(
+        LineChartData(
+          minX: 0,
+          maxX: (last30Totals.length - 1).toDouble(),
+          minY: 0,
+          maxY: maxY,
+          gridData: FlGridData(show: false),
+          borderData: FlBorderData(show: false),
+          lineBarsData: [
+            LineChartBarData(
+              spots: spots,
+              isCurved: true,
+              color: Colors.blue,
+              barWidth: 3,
+              dotData: FlDotData(show: false),
+            ),
+          ],
+        ),
       ),
     );
   }

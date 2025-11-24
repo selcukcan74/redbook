@@ -3,6 +3,7 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:redbook/pages/products/products_page.dart';
+import 'package:redbook/pages/settings/settings_page.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 // Senin sayfaların
@@ -26,6 +27,7 @@ class _HomePageState extends State<HomePage> {
     ProductsPage(),
     CustomersListPage(),
     QuotesPage(),
+    SettingsPage(),
   ];
 
   void _onTabChanged(int index) {
@@ -138,6 +140,10 @@ class _HomePageState extends State<HomePage> {
                       icon: Icon(Icons.receipt_long),
                       label: "Teklifler",
                     ),
+                    BottomNavigationBarItem(
+                      icon: Icon(Icons.settings),
+                      label: "Ayarlar",
+                    ),
                   ],
                 ),
               ),
@@ -210,6 +216,11 @@ class _HomePageState extends State<HomePage> {
                   icon: Icon(Icons.receipt_long_outlined),
                   selectedIcon: Icon(Icons.receipt_long),
                   label: Text("Teklif"),
+                ),
+                NavigationRailDestination(
+                  icon: Icon(Icons.settings_outlined),
+                  selectedIcon: Icon(Icons.settings),
+                  label: Text("Ayarlar"),
                 ),
               ],
             ),

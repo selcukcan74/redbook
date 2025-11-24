@@ -33,24 +33,24 @@ class _QuoteItemAddPageState extends State<QuoteItemAddPage> {
     super.dispose();
   }
 
+  // Ürün seçince formu doldur
   void fillProductInfo(String productId) {
     final product = widget.products.firstWhere(
-      (p) => p["id"] == productId,
+      (p) => p["id"].toString() == productId,
       orElse: () => {},
     );
 
-    // Birim
-    _unitCtrl.text = product["unit"]?.toString() ?? "";
+    if (product.isEmpty) return;
 
-    // Fiyat
+    _unitCtrl.text = product["unit"]?.toString() ?? "";
     _unitPriceCtrl.text = (product["sale_price"] ?? "").toString();
 
-    // Açıklama boşsa ürün adı yaz
     if (_descCtrl.text.trim().isEmpty) {
       _descCtrl.text = product["name"] ?? "";
     }
   }
 
+  // Kaydet
   void saveItem() {
     if (selectedProductId == null) {
       ScaffoldMessenger.of(
@@ -59,18 +59,18 @@ class _QuoteItemAddPageState extends State<QuoteItemAddPage> {
       return;
     }
 
-    final quantity = double.tryParse(_qtyCtrl.text.replaceAll(",", ".")) ?? 1;
+    final qty = double.tryParse(_qtyCtrl.text.replaceAll(",", ".")) ?? 1;
     final price =
         double.tryParse(_unitPriceCtrl.text.replaceAll(",", ".")) ?? 0;
 
-    final total = quantity * price;
+    final total = qty * price;
 
     final item = {
       "product_id": selectedProductId,
       "description": _descCtrl.text.trim(),
       "unit": _unitCtrl.text.trim(),
       "unit_price": price,
-      "quantity": quantity,
+      "quantity": qty,
       "total": total,
     };
 
@@ -100,8 +100,8 @@ class _QuoteItemAddPageState extends State<QuoteItemAddPage> {
               items: products
                   .map(
                     (p) => DropdownMenuItem<String>(
-                      value: p["id"] as String,
-                      child: Text(p["name"] ?? ""),
+                      value: p["id"].toString(),
+                      child: Text(p["name"]?.toString() ?? "-"),
                     ),
                   )
                   .toList(),

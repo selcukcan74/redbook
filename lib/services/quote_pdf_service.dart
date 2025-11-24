@@ -1,21 +1,23 @@
-// ignore_for_file: prefer_interpolation_to_compose_strings, avoid_print, deprecated_member_use
+// ignore_for_file: unused_local_variable, depend_on_referenced_packages, avoid_print, deprecated_member_use
 
 import 'dart:typed_data';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:pdf/widgets.dart' as pw;
 import 'package:pdf/pdf.dart';
 import 'package:printing/printing.dart';
+import 'package:http/http.dart' as http;
 
 class QuotePdfService {
-  // --------------------------------------------------------
-  // PDF OLUŞTURMA
-  // --------------------------------------------------------
+  /// Ana PDF oluşturma metodu
   static Future<Uint8List> _buildPdf({
     required Map<String, dynamic> quote,
     required Map<String, dynamic> customer,
     required List<Map<String, dynamic>> items,
+    required Map<String, dynamic> settings,
   }) async {
-    // Fontlar
+    // -------------------------------------------------------------
+    // FONTLAR
+    // -------------------------------------------------------------
     final fontRegular = pw.Font.ttf(
       await rootBundle.load("assets/fonts/NotoSans-Regular.ttf"),
     );
@@ -23,49 +25,83 @@ class QuotePdfService {
       await rootBundle.load("assets/fonts/NotoSans-Bold.ttf"),
     );
 
-    final pdf = pw.Document(
-      theme: pw.ThemeData.withFont(base: fontRegular, bold: fontBold),
-    );
+    final theme = pw.ThemeData.withFont(base: fontRegular, bold: fontBold);
+    final pdf = pw.Document(theme: theme);
 
-    // --------------------------------------------------------
-    // GITHUB PAGES QR URL
-    // --------------------------------------------------------
+    // -------------------------------------------------------------
+    // LOGO YÜKLEME (URL → MemoryImage, yoksa firma adı)
+    // -------------------------------------------------------------
+    pw.Widget logoWidget;
+    final logoUrl = settings["company_logo_url"];
+    final companyName = (settings["company_name"] ?? "Firma Adı").toString();
+
+    if (logoUrl != null && logoUrl.toString().isNotEmpty) {
+      try {
+        final response = await http.get(Uri.parse(logoUrl.toString()));
+        if (response.statusCode == 200) {
+          final logo = pw.MemoryImage(response.bodyBytes);
+          logoWidget = pw.Image(logo, width: 90);
+        } else {
+          logoWidget = pw.Text(
+            companyName,
+            style: pw.TextStyle(fontSize: 22, fontWeight: pw.FontWeight.bold),
+          );
+        }
+      } catch (e) {
+        logoWidget = pw.Text(
+          companyName,
+          style: pw.TextStyle(fontSize: 22, fontWeight: pw.FontWeight.bold),
+        );
+      }
+    } else {
+      logoWidget = pw.Text(
+        companyName,
+        style: pw.TextStyle(fontSize: 24, fontWeight: pw.FontWeight.bold),
+      );
+    }
+
+    // -------------------------------------------------------------
+    // QR CODE URL
+    // -------------------------------------------------------------
     const baseUrl = "https://selcukcan74.github.io/redbook/#/verify";
-
     final quoteId = quote["id"];
     final approveUrl = "$baseUrl?quoteId=$quoteId";
 
-    print("QuotePdfService → QR URL: $approveUrl");
+    // -------------------------------------------------------------
+    // HESAPLAR — DB İLE BİREBİR UYUMLU
+    // -------------------------------------------------------------
+    // Toplamlar mümkün olduğunca quotes tablosundan alınır.
+    final subtotal = (quote["subtotal"] ?? 0).toDouble();
+    final taxAmount = (quote["tax"] ?? 0).toDouble();
+    final discountValue = (quote["discount"] ?? 0).toDouble();
 
-    // --------------------------------------------------------
-    // BACKEND'DEN GELEN TOPLAMLAR (DETAIL SAYFASI İLE AYNI)
-    // --------------------------------------------------------
-    final subtotal = (quote["subtotal"] as num?)?.toDouble() ?? 0.0;
-    final tax = (quote["tax"] as num?)?.toDouble() ?? 0.0;
-    final discount = (quote["discount"] as num?)?.toDouble() ?? 0.0;
-
-    final totalBeforeDiscount =
-        (quote["total"] as num?)?.toDouble() ?? subtotal + tax;
+    final totalBeforeDiscount = (quote["total"] ?? (subtotal + taxAmount))
+        .toDouble();
 
     final finalTotal =
-        (quote["total_after_discount"] as num?)?.toDouble() ??
-        (totalBeforeDiscount - discount);
+        (quote["total_after_discount"] ?? (totalBeforeDiscount - discountValue))
+            .toDouble();
 
-    final discountType = (quote["discount_type"] ?? "none") as String;
-    final discountRate = (quote["discount_rate"] as num?)?.toDouble() ?? 0.0;
-    final discountAmount =
-        (quote["discount_amount"] as num?)?.toDouble() ?? 0.0;
+    // İndirim alanları (oran / tutar)
+    final discountType = (quote["discount_type"] ?? "none").toString();
+    final discountRate = (quote["discount_rate"] ?? 0).toDouble(); // 10 => %10
+    final discountAmount = (quote["discount_amount"] ?? 0).toDouble();
 
-    // --------------------------------------------------------
+    // KDV yüzdesini subtotal + tax üzerinden geri hesaplayalım
+    final taxPercent = subtotal == 0
+        ? 0
+        : (taxAmount / subtotal * 100).toDouble();
+
+    // -------------------------------------------------------------
     // PDF SAYFASI
-    // --------------------------------------------------------
+    // -------------------------------------------------------------
     pdf.addPage(
       pw.MultiPage(
-        margin: const pw.EdgeInsets.all(24),
+        margin: const pw.EdgeInsets.all(32),
         build: (context) => [
-          // ----------------------------------------------------
-          // BAŞLIK + QR
-          // ----------------------------------------------------
+          // ---------------------------------------------------------
+          // HEADER → Logo + Teklif Bilgileri + QR
+          // ---------------------------------------------------------
           pw.Row(
             mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
             crossAxisAlignment: pw.CrossAxisAlignment.start,
@@ -73,6 +109,8 @@ class QuotePdfService {
               pw.Column(
                 crossAxisAlignment: pw.CrossAxisAlignment.start,
                 children: [
+                  logoWidget,
+                  pw.SizedBox(height: 14),
                   pw.Text(
                     "TEKLİF / SÖZLEŞME",
                     style: pw.TextStyle(
@@ -80,42 +118,43 @@ class QuotePdfService {
                       fontWeight: pw.FontWeight.bold,
                     ),
                   ),
-                  pw.SizedBox(height: 5),
+                  pw.SizedBox(height: 6),
                   pw.Text("Teklif No: ${quote['quote_number'] ?? '-'}"),
-                  if (quote['issue_date'] != null)
-                    pw.Text(
-                      "Tarih: ${quote['issue_date'].toString().substring(0, 10)}",
-                    ),
+                  pw.Text(
+                    "Tarih: ${quote['issue_date'] != null ? quote['issue_date'].toString().substring(0, 10) : '-'}",
+                  ),
                 ],
               ),
 
-              // QR KOD
-              pw.Container(
-                padding: const pw.EdgeInsets.all(4),
-                decoration: pw.BoxDecoration(
-                  border: pw.Border.all(color: PdfColors.grey, width: 0.5),
-                  borderRadius: pw.BorderRadius.circular(6),
-                ),
-                child: pw.BarcodeWidget(
-                  data: approveUrl,
-                  barcode: pw.Barcode.qrCode(),
-                  width: 90,
-                  height: 90,
-                ),
+              pw.Column(
+                children: [
+                  pw.BarcodeWidget(
+                    data: approveUrl,
+                    barcode: pw.Barcode.qrCode(),
+                    width: 110,
+                    height: 110,
+                  ),
+                  pw.SizedBox(height: 8),
+                  pw.Text(
+                    "QR Kodunu okutarak\nteklifi görüntüleyebilirsiniz",
+                    textAlign: pw.TextAlign.center,
+                    style: const pw.TextStyle(fontSize: 9),
+                  ),
+                ],
               ),
             ],
           ),
 
-          pw.SizedBox(height: 20),
+          pw.SizedBox(height: 30),
 
-          // ----------------------------------------------------
+          // ---------------------------------------------------------
           // MÜŞTERİ BİLGİLERİ
-          // ----------------------------------------------------
+          // ---------------------------------------------------------
           pw.Container(
-            padding: const pw.EdgeInsets.all(12),
+            padding: const pw.EdgeInsets.all(14),
             decoration: pw.BoxDecoration(
-              border: pw.Border.all(width: 1),
-              borderRadius: pw.BorderRadius.circular(8),
+              borderRadius: pw.BorderRadius.circular(10),
+              border: pw.Border.all(color: PdfColors.grey600, width: 1),
             ),
             child: pw.Column(
               crossAxisAlignment: pw.CrossAxisAlignment.start,
@@ -127,7 +166,7 @@ class QuotePdfService {
                     fontSize: 14,
                   ),
                 ),
-                pw.SizedBox(height: 8),
+                pw.SizedBox(height: 10),
                 pw.Text("Firma: ${customer['company'] ?? '-'}"),
                 pw.Text("Yetkili: ${customer['name'] ?? '-'}"),
                 pw.Text("Telefon: ${customer['phone'] ?? '-'}"),
@@ -137,78 +176,78 @@ class QuotePdfService {
             ),
           ),
 
-          pw.SizedBox(height: 20),
+          pw.SizedBox(height: 28),
 
-          // ----------------------------------------------------
+          // ---------------------------------------------------------
           // ÜRÜN TABLOSU
-          // ----------------------------------------------------
+          // ---------------------------------------------------------
           pw.Text(
             "TEKLİF KALEMLERİ",
-            style: pw.TextStyle(fontSize: 16, fontWeight: pw.FontWeight.bold),
+            style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 15),
           ),
-          pw.SizedBox(height: 8),
+          pw.SizedBox(height: 12),
 
           pw.Table.fromTextArray(
-            border: pw.TableBorder.all(width: 0.5),
+            headerDecoration: pw.BoxDecoration(
+              color: PdfColor.fromHex("#F2F2F2"),
+            ),
             headerStyle: pw.TextStyle(
               fontWeight: pw.FontWeight.bold,
-              fontSize: 10,
+              fontSize: 11,
             ),
-            cellStyle: const pw.TextStyle(fontSize: 10),
-            cellAlignment: pw.Alignment.centerLeft,
-            headers: const [
-              "Açıklama",
-              "Miktar",
-              "Birim",
-              "Birim Fiyat",
-              "Toplam",
-            ],
+            cellStyle: pw.TextStyle(fontSize: 10),
+            border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),
+            headers: ["Açıklama", "Miktar", "Birim", "Birim Fiyat", "Toplam"],
             data: items.map((item) {
-              final qty = (item["quantity"] as num?)?.toDouble() ?? 0.0;
-              final unitPrice = (item["unit_price"] as num?)?.toDouble() ?? 0.0;
-              final lineTotal = (item["total"] as num?)?.toDouble() ?? 0.0;
+              final qty = (item["quantity"] ?? 0).toString();
+              final unitPrice = ((item["unit_price"] ?? 0).toDouble())
+                  .toStringAsFixed(2);
+              final total =
+                  ((item["line_total"] ?? item["total"] ?? 0).toDouble())
+                      .toStringAsFixed(2);
 
               return [
-                (item["description"] ?? "").toString(),
-                qty.toStringAsFixed(2),
-                (item["unit"] ?? "").toString(),
-                "${unitPrice.toStringAsFixed(2)} ₺",
-                "${lineTotal.toStringAsFixed(2)} ₺",
+                item["description"] ?? "",
+                qty,
+                item["unit"] ?? "",
+                "$unitPrice ₺",
+                "$total ₺",
               ];
             }).toList(),
           ),
 
-          pw.SizedBox(height: 20),
+          pw.SizedBox(height: 30),
 
-          // ----------------------------------------------------
-          // TOPLAM ALANI
-          // ----------------------------------------------------
+          // ---------------------------------------------------------
+          // TOPLAM BİLGİLERİ (quotes tablosundaki değerler)
+          // ---------------------------------------------------------
           pw.Row(
             mainAxisAlignment: pw.MainAxisAlignment.end,
             children: [
               pw.Container(
-                width: 260,
-                padding: const pw.EdgeInsets.all(12),
+                width: 280,
+                padding: const pw.EdgeInsets.all(14),
                 decoration: pw.BoxDecoration(
-                  borderRadius: pw.BorderRadius.circular(8),
-                  border: pw.Border.all(width: 1),
+                  borderRadius: pw.BorderRadius.circular(10),
+                  border: pw.Border.all(color: PdfColors.grey600, width: 1),
                 ),
                 child: pw.Column(
                   children: [
-                    _totalRow("Ara Toplam", subtotal),
-                    _totalRow("KDV (%20)", tax),
+                    _row("Ara Toplam", subtotal),
+                    _row("KDV (%${taxPercent.toStringAsFixed(0)})", taxAmount),
+
                     if (discountType != "none")
-                      _totalRow(
+                      _row(
                         discountType == "percent"
-                            ? "İndirim (%${discountRate.toStringAsFixed(0)})"
-                            : "İndirim (${discountAmount.toStringAsFixed(0)}₺)",
-                        -discount,
+                            ? "%${discountRate.toStringAsFixed(0)} İndirim"
+                            : "İndirim",
+                        -discountValue,
                         red: true,
                       ),
-                    _totalRow("Genel Toplam", totalBeforeDiscount),
+
                     pw.Divider(),
-                    _totalRow(
-                      "Net Ödenecek Tutar",
+                    _row(
+                      "KDV Dahil Genel Toplam",
                       finalTotal,
                       bold: true,
                       big: true,
@@ -219,73 +258,33 @@ class QuotePdfService {
             ],
           ),
 
-          pw.SizedBox(height: 20),
+          pw.SizedBox(height: 40),
 
-          // ----------------------------------------------------
-          // NOTLAR
-          // ----------------------------------------------------
-          if ((quote["notes"] ?? "").toString().trim().isNotEmpty)
-            pw.Column(
-              crossAxisAlignment: pw.CrossAxisAlignment.start,
-              children: [
-                pw.Text(
-                  "NOTLAR",
-                  style: pw.TextStyle(
-                    fontSize: 14,
-                    fontWeight: pw.FontWeight.bold,
-                  ),
-                ),
-                pw.SizedBox(height: 8),
-                pw.Text(quote["notes"].toString()),
-                pw.SizedBox(height: 20),
-              ],
+          // ---------------------------------------------------------
+          // FOOTER (firma alt yazısı)
+          // ---------------------------------------------------------
+          if ((settings["invoice_footer"] ?? "").toString().isNotEmpty)
+            pw.Text(
+              settings["invoice_footer"],
+              style: const pw.TextStyle(fontSize: 10),
             ),
-
-          // ----------------------------------------------------
-          // QR AÇIKLAMASI
-          // ----------------------------------------------------
-          pw.Text(
-            "Bu teklifi onaylamak veya durumunu görüntülemek için aşağıdaki QR kodu tarayabilirsiniz.",
-            style: pw.TextStyle(fontSize: 11),
-          ),
-          pw.SizedBox(height: 10),
-
-          pw.Row(
-            children: [
-              pw.BarcodeWidget(
-                data: approveUrl,
-                barcode: pw.Barcode.qrCode(),
-                width: 120,
-                height: 120,
-              ),
-              pw.SizedBox(width: 12),
-              pw.Expanded(
-                child: pw.Text(
-                  approveUrl,
-                  style: const pw.TextStyle(fontSize: 9),
-                ),
-              ),
-            ],
-          ),
 
           pw.SizedBox(height: 30),
 
-          // ----------------------------------------------------
-          // İMZA ALANI
-          // ----------------------------------------------------
+          // ---------------------------------------------------------
+          // İMZA ALANLARI
+          // ---------------------------------------------------------
           pw.Row(
             mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
             children: [
               pw.Column(
-                crossAxisAlignment: pw.CrossAxisAlignment.start,
                 children: [
-                  pw.Text("Teklifi Hazırlayan"),
+                  pw.Text("Hazırlayan"),
                   pw.SizedBox(height: 40),
-                  pw.Text("İmza"),
+                  pw.Text(settings["company_owner"] ?? "İmza"),
                 ],
               ),
               pw.Column(
-                crossAxisAlignment: pw.CrossAxisAlignment.start,
                 children: [
                   pw.Text("Müşteri Onayı"),
                   pw.SizedBox(height: 40),
@@ -301,10 +300,10 @@ class QuotePdfService {
     return pdf.save();
   }
 
-  // --------------------------------------------------------
-  // TOPLAM SATIRI WIDGET'I
-  // --------------------------------------------------------
-  static pw.Widget _totalRow(
+  /// -------------------------------------------------------------
+  /// Toplam satır widget
+  /// -------------------------------------------------------------
+  static pw.Widget _row(
     String label,
     double value, {
     bool bold = false,
@@ -319,16 +318,15 @@ class QuotePdfService {
           pw.Text(
             label,
             style: pw.TextStyle(
-              fontWeight: bold ? pw.FontWeight.bold : pw.FontWeight.normal,
               fontSize: big ? 12 : 10,
-              color: red ? PdfColors.red : PdfColors.black,
+              fontWeight: bold ? pw.FontWeight.bold : pw.FontWeight.normal,
             ),
           ),
           pw.Text(
             "${value.toStringAsFixed(2)} ₺",
             style: pw.TextStyle(
-              fontWeight: bold ? pw.FontWeight.bold : pw.FontWeight.normal,
               fontSize: big ? 14 : 10,
+              fontWeight: bold ? pw.FontWeight.bold : pw.FontWeight.normal,
               color: red ? PdfColors.red : PdfColors.black,
             ),
           ),
@@ -337,22 +335,25 @@ class QuotePdfService {
     );
   }
 
-  // --------------------------------------------------------
-  // PAYLAŞILABİLİR PDF OLUŞTURMA
-  // --------------------------------------------------------
+  /// -------------------------------------------------------------
+  /// PDF OLUŞTURMA & PAYLAŞMA
+  /// -------------------------------------------------------------
   static Future<void> generateAndShare({
     required Map<String, dynamic> quote,
     required Map<String, dynamic> customer,
     required List<Map<String, dynamic>> items,
+    required Map<String, dynamic> settings,
   }) async {
     final pdfBytes = await _buildPdf(
       quote: quote,
       customer: customer,
       items: items,
+      settings: settings,
     );
 
-    final fileName = (quote['quote_number'] ?? 'teklif').toString() + ".pdf";
-
-    await Printing.sharePdf(bytes: pdfBytes, filename: fileName);
+    await Printing.sharePdf(
+      bytes: pdfBytes,
+      filename: "${quote['quote_number']}.pdf",
+    );
   }
 }

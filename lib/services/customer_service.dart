@@ -5,11 +5,39 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 class CustomerService {
   final supabase = Supabase.instance.client;
 
+  // -------------------------------------------------
+  // AKTİF ŞİRKET ID'Sİ
+  // -------------------------------------------------
+  Future<String> _getCompanyId() async {
+    final user = supabase.auth.currentUser;
+    if (user == null) throw Exception("Kullanıcı oturumu yok");
+
+    final userId = user.id;
+
+    final existing = await supabase
+        .from("companies")
+        .select("id")
+        .eq("user_id", userId)
+        .maybeSingle();
+
+    if (existing == null || existing["id"] == null) {
+      throw Exception("Company kaydı bulunamadı (trigger çalışmamış olabilir)");
+    }
+
+    return existing["id"];
+  }
+
+  // -------------------------------------------------
+  // TÜM MÜŞTERİLER
+  // -------------------------------------------------
   Future<List<Map<String, dynamic>>> getCustomers() async {
     try {
+      final companyId = await _getCompanyId();
+
       final res = await supabase
           .from("customers")
           .select()
+          .eq("company_id", companyId)
           .order("created_at", ascending: false);
 
       return List<Map<String, dynamic>>.from(res);
@@ -19,12 +47,18 @@ class CustomerService {
     }
   }
 
+  // -------------------------------------------------
+  // MÜŞTERİ DETAY
+  // -------------------------------------------------
   Future<Map<String, dynamic>?> getCustomer(String id) async {
     try {
+      final companyId = await _getCompanyId();
+
       final res = await supabase
           .from("customers")
           .select()
           .eq("id", id)
+          .eq("company_id", companyId)
           .maybeSingle();
 
       return res;
@@ -34,6 +68,9 @@ class CustomerService {
     }
   }
 
+  // -------------------------------------------------
+  // MÜŞTERİ EKLE
+  // -------------------------------------------------
   Future<void> addCustomer({
     required String name,
     String? company,
@@ -42,7 +79,10 @@ class CustomerService {
     required String email,
     required String address,
   }) async {
+    final companyId = await _getCompanyId();
+
     await supabase.from("customers").insert({
+      "company_id": companyId,
       "name": name,
       "company": company,
       "contact_name": contactName,
@@ -52,6 +92,9 @@ class CustomerService {
     });
   }
 
+  // -------------------------------------------------
+  // MÜŞTERİ GÜNCELLE
+  // -------------------------------------------------
   Future<void> updateCustomer({
     required String id,
     required String name,
@@ -60,6 +103,8 @@ class CustomerService {
     required String address,
     required String company,
   }) async {
+    final companyId = await _getCompanyId();
+
     await supabase
         .from("customers")
         .update({
@@ -70,21 +115,24 @@ class CustomerService {
           "company": company,
           "updated_at": DateTime.now().toIso8601String(),
         })
-        .eq("id", id);
-  }
-
-  Future<void> deleteCustomer(String id) async {
-    await supabase.from("customers").delete().eq("id", id);
-  }
-
-  Future<Map<String, dynamic>?> getCustomerById(String id) async {
-    final res = await supabase
-        .from("customers")
-        .select()
         .eq("id", id)
-        .maybeSingle();
+        .eq("company_id", companyId);
+  }
 
-    if (res == null) return null;
-    return Map<String, dynamic>.from(res);
+  // -------------------------------------------------
+  // MÜŞTERİ SİL
+  // -------------------------------------------------
+  Future<void> deleteCustomer(String id) async {
+    final companyId = await _getCompanyId();
+
+    await supabase
+        .from("customers")
+        .delete()
+        .eq("id", id)
+        .eq("company_id", companyId);
+  }
+
+  Future<Map<String, dynamic>?> getCustomerById(String id) {
+    return getCustomer(id);
   }
 }

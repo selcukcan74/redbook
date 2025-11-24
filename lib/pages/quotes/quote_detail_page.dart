@@ -1,12 +1,13 @@
-// ignore_for_file: unused_import, use_build_context_synchronously
+// ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter/material.dart';
-import 'package:printing/printing.dart';
 import 'package:redbook/services/quote_pdf_service.dart';
-import '../../services/pdf_service.dart';
+
 import '../../services/quote_item_service.dart';
 import '../../services/quote_service.dart';
 import '../../services/customer_service.dart';
+import '../../services/settings_service.dart';
+
 import 'quote_item_add_page.dart';
 import 'quote_edit_page.dart';
 
@@ -23,9 +24,11 @@ class _QuoteDetailPageState extends State<QuoteDetailPage> {
   final quoteService = QuoteService();
   final itemService = QuoteItemService();
   final customerService = CustomerService();
+  final settingsService = SettingsService();
 
   Map<String, dynamic>? quote;
   Map<String, dynamic>? customer;
+  Map<String, dynamic>? settings;
   List<Map<String, dynamic>> items = [];
 
   bool loading = true;
@@ -39,16 +42,29 @@ class _QuoteDetailPageState extends State<QuoteDetailPage> {
   Future<void> loadData() async {
     setState(() => loading = true);
 
+    // 1) Teklif
     quote = await quoteService.getQuoteById(widget.quoteId);
-    if (quote == null) return;
+    if (quote == null) {
+      setState(() => loading = false);
+      return;
+    }
 
-    customer = await customerService.getCustomerById(quote!["customer_id"]);
+    // 2) Müşteri
+    final customerId = quote!['customer_id']?.toString();
+    if (customerId != null && customerId.isNotEmpty) {
+      customer = await customerService.getCustomerById(customerId);
+    }
+
+    // 3) Ürün kalemleri
     items = await itemService.getItemsByQuote(widget.quoteId);
+
+    // 4) Ayarlar
+    settings = await settingsService.getSettings();
 
     setState(() => loading = false);
   }
 
-  void addItem() async {
+  Future<void> addItem() async {
     final products = await itemService.getAllProducts();
 
     await Navigator.push(
@@ -63,7 +79,7 @@ class _QuoteDetailPageState extends State<QuoteDetailPage> {
       ),
     );
 
-    loadData();
+    await loadData();
   }
 
   @override
@@ -72,48 +88,52 @@ class _QuoteDetailPageState extends State<QuoteDetailPage> {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
+    if (quote == null || customer == null) {
+      return const Scaffold(body: Center(child: Text('Teklif bulunamadı.')));
+    }
+
     // ------------------------------
     // HESAPLAR
     // ------------------------------
-    final subtotal = (quote!["subtotal"] ?? 0).toDouble();
-    final tax = (quote!["tax"] ?? 0).toDouble();
-    final discount = (quote!["discount"] ?? 0).toDouble();
-    final totalBeforeDiscount = (quote!["total"] ?? 0).toDouble();
-    final finalTotal = (quote!["total_after_discount"] ?? totalBeforeDiscount)
+    final subtotal = (quote!['subtotal'] ?? 0).toDouble();
+    final tax = (quote!['tax'] ?? 0).toDouble();
+    final discount = (quote!['discount'] ?? 0).toDouble();
+    final totalBeforeDiscount = (quote!['total'] ?? 0).toDouble();
+    final finalTotal = (quote!['total_after_discount'] ?? totalBeforeDiscount)
         .toDouble();
 
-    final discountType = quote!["discount_type"] ?? "none";
-    final discountRate = ((quote!["discount_rate"] ?? 0) * 100).toDouble();
-    final discountAmount = (quote!["discount_amount"] ?? 0).toDouble();
+    final discountType = quote!['discount_type'] ?? 'none';
+    final discountRate = (quote!['discount_rate'] ?? 0).toDouble();
+    final discountAmount = (quote!['discount_amount'] ?? 0).toDouble();
+
+    final quoteIdStr = quote!['id'].toString();
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Teklif Detayı"),
+        title: const Text('Teklif Detayı'),
         actions: [
-          // ----------------------
-          // ✏️ Teklifi Düzenle
-          // ----------------------
+          // ✏ Teklifi Düzenle
           IconButton(
             icon: const Icon(Icons.edit),
-            tooltip: "Teklifi Düzenle",
             onPressed: () async {
               await Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (_) => QuoteEditPage(quoteId: quote!['id']),
+                  builder: (_) => QuoteEditPage(quoteId: quoteIdStr),
                 ),
               );
-              loadData();
+              await loadData();
             },
           ),
+
+          // 📄 Kopyala
           IconButton(
             icon: const Icon(Icons.copy),
-            tooltip: "Teklifi Kopyala",
             onPressed: () async {
-              final newId = await quoteService.duplicateQuote(quote!["id"]);
+              final newId = await quoteService.duplicateQuote(quoteIdStr);
 
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text("Teklif başarıyla kopyalandı")),
+                const SnackBar(content: Text('Teklif başarıyla kopyalandı')),
               );
 
               await Navigator.push(
@@ -125,16 +145,26 @@ class _QuoteDetailPageState extends State<QuoteDetailPage> {
             },
           ),
 
-          // ----------------------
-          // PDF OLUŞTUR
-          // ----------------------
+          // 📄 PDF
           IconButton(
             icon: const Icon(Icons.picture_as_pdf),
             onPressed: () async {
+              if (settings == null) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text(
+                      'Önce Ayarlar sayfasından firma bilgilerini kaydedin.',
+                    ),
+                  ),
+                );
+                return;
+              }
+
               await QuotePdfService.generateAndShare(
                 quote: quote!,
                 customer: customer!,
                 items: items,
+                settings: settings!,
               );
             },
           ),
@@ -144,15 +174,13 @@ class _QuoteDetailPageState extends State<QuoteDetailPage> {
       floatingActionButton: FloatingActionButton.extended(
         onPressed: addItem,
         icon: const Icon(Icons.add),
-        label: const Text("Ürün Ekle"),
+        label: const Text('Ürün Ekle'),
       ),
 
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          // -------------------------
           // DURUM
-          // -------------------------
           Card(
             child: Padding(
               padding: const EdgeInsets.all(16),
@@ -160,44 +188,36 @@ class _QuoteDetailPageState extends State<QuoteDetailPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const Text(
-                    "Durum",
+                    'Durum',
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                   DropdownButton<String>(
                     value: quote!['status'],
                     items: const [
-                      DropdownMenuItem(value: 'draft', child: Text("Taslak")),
+                      DropdownMenuItem(value: 'draft', child: Text('Taslak')),
                       DropdownMenuItem(
                         value: 'sent',
-                        child: Text("Gönderildi"),
+                        child: Text('Gönderildi'),
                       ),
                       DropdownMenuItem(
                         value: 'accepted',
-                        child: Text("Kabul Edildi"),
+                        child: Text('Kabul Edildi'),
                       ),
                       DropdownMenuItem(
                         value: 'rejected',
-                        child: Text("Reddedildi"),
+                        child: Text('Reddedildi'),
                       ),
                       DropdownMenuItem(
                         value: 'expired',
-                        child: Text("Süresi Doldu"),
+                        child: Text('Süresi Doldu'),
                       ),
                     ],
                     onChanged: (v) async {
                       if (v == null) return;
 
-                      await quoteService.updateQuote(
-                        id: quote!['id'],
-                        status: v,
-                        notes: quote!['notes'],
-                        validUntil: quote!['valid_until'] != null
-                            ? DateTime.parse(quote!['valid_until'])
-                            : null,
-                        customerId: quote!['customer_id'],
-                      );
+                      await quoteService.updateQuote(id: quoteIdStr, status: v);
 
-                      loadData();
+                      await loadData();
                     },
                   ),
                 ],
@@ -207,32 +227,30 @@ class _QuoteDetailPageState extends State<QuoteDetailPage> {
 
           const SizedBox(height: 16),
 
-          // -------------------------
-          // TEKLİF NO / TARİH
-          // -------------------------
+          // TEKLİF BİLGİLERİ
           Card(
             child: ListTile(
-              title: Text("Teklif No: ${quote!['quote_number'] ?? '-'}"),
+              title: Text('Teklif No: ${quote!['quote_number'] ?? '-'}'),
               subtitle: Text(
-                "Tarih: ${quote!['issue_date'].toString().substring(0, 10)}",
+                'Tarih: ${quote!['issue_date'].toString().substring(0, 10)}',
               ),
             ),
           ),
 
           const SizedBox(height: 16),
 
-          // -------------------------
-          // MÜŞTERİ BİLGİLERİ
-          // -------------------------
+          // MÜŞTERİ
           Card(
             child: ListTile(
-              title: Text(customer?['company'] ?? customer?['name'] ?? "-"),
+              title: Text(
+                (customer!['company'] ?? customer!['name'] ?? '-').toString(),
+              ),
               subtitle: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("Yetkili: ${customer?['contact_name'] ?? '-'}"),
-                  Text("Telefon: ${customer?['phone'] ?? '-'}"),
-                  Text("Adres: ${customer?['address'] ?? '-'}"),
+                  Text('Yetkili: ${customer!['contact_name'] ?? '-'}'),
+                  Text('Telefon: ${customer!['phone'] ?? '-'}'),
+                  Text('Adres: ${customer!['address'] ?? '-'}'),
                 ],
               ),
             ),
@@ -240,29 +258,38 @@ class _QuoteDetailPageState extends State<QuoteDetailPage> {
 
           const SizedBox(height: 20),
 
-          // -------------------------
-          // ÜRÜN LİSTESİ
-          // -------------------------
+          // ÜRÜNLER
           const Text(
-            "Ürünler",
+            'Ürünler',
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 12),
 
-          if (items.isEmpty) const Text("Bu teklife henüz ürün eklenmedi."),
+          if (items.isEmpty) const Text('Bu teklife henüz ürün eklenmedi.'),
 
-          for (var item in items)
+          for (final Map<String, dynamic> item in items)
             Card(
               child: ListTile(
-                title: Text(item['description']),
+                title: Text((item['description'] ?? '').toString()),
                 subtitle: Text(
-                  "${item['quantity']} x ${item['unit_price']} ₺ = ${item['total']} ₺",
+                  '${(item['quantity'] ?? 0).toString()} x '
+                  '${(item['unit_price'] ?? 0).toString()} ₺'
+                  ' = ${(item['total'] ?? 0).toString()} ₺',
                 ),
                 trailing: IconButton(
                   icon: const Icon(Icons.delete, color: Colors.red),
                   onPressed: () async {
-                    await itemService.deleteQuoteItem(item["id"]);
-                    loadData();
+                    final rawId = item["id"];
+
+                    if (rawId == null) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text("Ürün ID bulunamadı")),
+                      );
+                      return;
+                    }
+
+                    await itemService.deleteQuoteItem(rawId.toString());
+                    await loadData();
                   },
                 ),
               ),
@@ -270,24 +297,21 @@ class _QuoteDetailPageState extends State<QuoteDetailPage> {
 
           const Divider(height: 32),
 
-          // -------------------------
-          // TOPLAM SATIRLARI
-          // -------------------------
-          _totalRow("Ara Toplam", subtotal),
-          _totalRow("KDV (%20)", tax),
+          // TOPLAMLAR
+          _totalRow('Ara Toplam', subtotal),
+          _totalRow('KDV (%20)', tax),
 
-          if (discountType != "none")
+          if (discountType != 'none')
             _totalRow(
-              discountType == "percent"
-                  ? "İndirim (%${discountRate.toStringAsFixed(0)})"
-                  : "İndirim (${discountAmount.toStringAsFixed(0)}₺)",
+              discountType == 'percent'
+                  ? 'İndirim (%${discountRate.toStringAsFixed(0)})'
+                  : 'İndirim (${discountAmount.toStringAsFixed(0)}₺)',
               -discount,
               red: true,
             ),
 
-          _totalRow("Genel Toplam", totalBeforeDiscount),
-
-          _totalRow("Net Ödenecek", finalTotal, big: true),
+          _totalRow('Genel Toplam', totalBeforeDiscount),
+          _totalRow('Net Ödenecek', finalTotal, big: true),
         ],
       ),
     );
@@ -314,7 +338,7 @@ class _QuoteDetailPageState extends State<QuoteDetailPage> {
             ),
           ),
           Text(
-            "${v.toStringAsFixed(2)} ₺",
+            '${v.toStringAsFixed(2)} ₺',
             style: TextStyle(
               fontSize: big ? 20 : 16,
               fontWeight: big ? FontWeight.bold : FontWeight.normal,

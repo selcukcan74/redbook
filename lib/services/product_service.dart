@@ -6,9 +6,51 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 class ProductService {
   final supabase = Supabase.instance.client;
 
-  // ---------------------------------------------------------------------------
-  // IMAGE UPLOAD (ÇALIŞAN)
-  // ---------------------------------------------------------------------------
+  // -----------------------------------------------------------
+  // Aktif şirket ID'si (companies tablosu) — FULL FIXED
+  // -----------------------------------------------------------
+  Future<String> _getCompanyId() async {
+    final user = supabase.auth.currentUser;
+    if (user == null) throw Exception("Kullanıcı oturumu yok");
+
+    final userId = user.id;
+
+    // Bu kullanıcıya ait company var mı?
+    final existing = await supabase
+        .from("companies")
+        .select("id")
+        .eq("user_id", userId)
+        .maybeSingle();
+
+    if (existing != null && existing["id"] != null) {
+      return existing["id"].toString();
+    }
+
+    // -----------------------------------------------
+    // Yoksa yeni şirket oluştur (NOT NULL alanlar dolu!)
+    // -----------------------------------------------
+    final inserted = await supabase
+        .from("companies")
+        .insert({
+          "user_id": userId,
+          "name": "Firma Adı", // NOT NULL fix
+          "address": "",
+          "phone": "",
+          "email": "",
+        })
+        .select("id")
+        .maybeSingle();
+
+    if (inserted == null || inserted["id"] == null) {
+      throw Exception("Company kaydı oluşturulamadı");
+    }
+
+    return inserted["id"].toString();
+  }
+
+  // -----------------------------------------------------------
+  // Storage → Ürün görseli yükleme
+  // -----------------------------------------------------------
   Future<String?> uploadImage({
     required Uint8List bytes,
     required String fileName,
@@ -25,17 +67,16 @@ class ProductService {
             fileOptions: const FileOptions(upsert: true),
           );
 
-      final url = supabase.storage.from(bucket).getPublicUrl(path);
-      return url;
+      return supabase.storage.from(bucket).getPublicUrl(path);
     } catch (e) {
       print("Image upload error: $e");
       return null;
     }
   }
 
-  // ---------------------------------------------------------------------------
-  // ADD PRODUCT
-  // ---------------------------------------------------------------------------
+  // -----------------------------------------------------------
+  // ÜRÜN EKLE
+  // -----------------------------------------------------------
   Future<void> addProduct({
     required String name,
     required String unit,
@@ -44,7 +85,10 @@ class ProductService {
     required String description,
     String? imageUrl,
   }) async {
+    final companyId = await _getCompanyId();
+
     await supabase.from("products").insert({
+      "company_id": companyId,
       "name": name,
       "unit": unit,
       "purchase_price": purchasePrice,
@@ -56,9 +100,9 @@ class ProductService {
     });
   }
 
-  // ---------------------------------------------------------------------------
-  // UPDATE PRODUCT
-  // ---------------------------------------------------------------------------
+  // -----------------------------------------------------------
+  // ÜRÜN GÜNCELLE
+  // -----------------------------------------------------------
   Future<void> updateProduct({
     required String id,
     required String name,
@@ -68,6 +112,8 @@ class ProductService {
     required String description,
     String? imageUrl,
   }) async {
+    final companyId = await _getCompanyId();
+
     await supabase
         .from("products")
         .update({
@@ -77,41 +123,54 @@ class ProductService {
           "sale_price": salePrice,
           "description": description,
           "image_url": imageUrl,
+          "company_id": companyId,
           "updated_at": DateTime.now().toIso8601String(),
         })
-        .eq("id", id);
+        .eq("id", id)
+        .eq("company_id", companyId);
   }
 
-  // ---------------------------------------------------------------------------
-  // DELETE PRODUCT
-  // ---------------------------------------------------------------------------
+  // -----------------------------------------------------------
+  // ÜRÜN SİL
+  // -----------------------------------------------------------
   Future<void> deleteProduct(String id) async {
-    await supabase.from("products").delete().eq("id", id);
+    final companyId = await _getCompanyId();
+
+    await supabase
+        .from("products")
+        .delete()
+        .eq("id", id)
+        .eq("company_id", companyId);
   }
 
-  // ---------------------------------------------------------------------------
-  // GET ALL PRODUCTS
-  // ---------------------------------------------------------------------------
+  // -----------------------------------------------------------
+  // TÜM ÜRÜNLER (Şirkete göre)
+  // -----------------------------------------------------------
   Future<List<Map<String, dynamic>>> getProducts() async {
+    final companyId = await _getCompanyId();
+
     final res = await supabase
         .from("products")
         .select()
+        .eq("company_id", companyId)
         .order("created_at", ascending: false);
 
     return List<Map<String, dynamic>>.from(res);
   }
 
-  // ---------------------------------------------------------------------------
-  // GET SINGLE PRODUCT
-  // ---------------------------------------------------------------------------
+  // -----------------------------------------------------------
+  // TEK ÜRÜN GETİR
+  // -----------------------------------------------------------
   Future<Map<String, dynamic>?> getProduct(String id) async {
+    final companyId = await _getCompanyId();
+
     final res = await supabase
         .from("products")
         .select()
         .eq("id", id)
+        .eq("company_id", companyId)
         .maybeSingle();
 
-    if (res == null) return null;
-    return Map<String, dynamic>.from(res);
+    return res == null ? null : Map<String, dynamic>.from(res);
   }
 }
