@@ -68,8 +68,8 @@ class QuotePdfService {
     // -------------------------------------------------------------
     // QR + LİNK
     // -------------------------------------------------------------
-    const baseUrl = "https://selcukcan74.github.io/redbook/verify";
-    final approveUrl = "$baseUrl/?quoteId=${quote["id"]}";
+    const baseUrl = "https://selcukcan74.github.io/redbook/#/verify";
+    final approveUrl = "$baseUrl?quoteId=${quote["id"]}";
 
     final qrBlock = pw.Container(
       width: 210,

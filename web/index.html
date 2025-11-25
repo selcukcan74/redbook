@@ -89,7 +89,9 @@
 
 <script>
   const urlParams = new URLSearchParams(window.location.search);
-  const quoteId = urlParams.get("id");
+  const hash = window.location.hash;  
+  const url = new URL("https://dummy.com" + hash.replace("#/verify", ""));
+  const quoteId = url.searchParams.get("quoteId");
 
   const card = document.getElementById("card");
 
