@@ -94,7 +94,7 @@
   const card = document.getElementById("card");
 
   async function loadQuote() {
-    const res = await fetch(`https://senin-api.com/get_quote?id=${quoteId}`);
+    const res = await fetch(`https://selcukcan74.github.io/redbook/#/verify?get_quote?id=${quoteId}`);
     const data = await res.json();
 
     card.innerHTML = `
@@ -111,12 +111,12 @@
   }
 
   async function approve() {
-    const res = await fetch(`https://senin-api.com/approve_quote?id=${quoteId}`);
+    const res = await fetch(`https://selcukcan74.github.io/redbook/#/verify?get_quote?id=${quoteId}`);
     card.innerHTML = `<div class="status-box success">✔ Teklif Başarıyla Onaylandı</div>`;
   }
 
   async function reject() {
-    const res = await fetch(`https://senin-api.com/reject_quote?id=${quoteId}`);
+    const res = await fetch(`https://selcukcan74.github.io/redbook/#/verify?get_quote?id=${quoteId}`);
     card.innerHTML = `<div class="status-box failed">✖ Teklif Reddedildi</div>`;
   }
 
