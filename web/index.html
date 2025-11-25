@@ -51,15 +51,8 @@
     font-weight: 600;
   }
 
-  .approve {
-    background: #10b981;
-    color: white;
-  }
-
-  .reject {
-    background: #ef4444;
-    color: white;
-  }
+  .approve { background: #10b981; color: white; }
+  .reject { background: #ef4444; color: white; }
 
   .status-box {
     margin-top: 24px;
@@ -69,15 +62,8 @@
     border-radius: 10px;
   }
 
-  .success {
-    background: #d1fae5;
-    color: #065f46;
-  }
-
-  .failed {
-    background: #fee2e2;
-    color: #991b1b;
-  }
+  .success { background: #d1fae5; color: #065f46; }
+  .failed { background: #fee2e2; color: #991b1b; }
 </style>
 
 </head>
@@ -88,38 +74,97 @@
 </div>
 
 <script>
-  const urlParams = new URLSearchParams(window.location.search);
-  const hash = window.location.hash;  
-  const url = new URL("https://dummy.com" + hash.replace("#/verify", ""));
-  const quoteId = url.searchParams.get("quoteId");
+  // ----------------------------------------------------------
+  // HASH ROUTING → GitHub Pages'da ÇALIŞAN TEK YÖNTEM
+  // ----------------------------------------------------------
+  function getQuoteIdFromHash() {
+    const hash = window.location.hash; // #/verify?quoteId=abc
+    if (!hash.includes("?")) return null;
 
+    const queryString = hash.split("?")[1];
+    const params = new URLSearchParams(queryString);
+
+    return params.get("quoteId");
+  }
+
+  const quoteId = getQuoteIdFromHash();
   const card = document.getElementById("card");
 
+  if (!quoteId) {
+    card.innerHTML = `<div class="status-box failed">Teklif ID bulunamadı.</div>`;
+  }
+
+  // ----------------------------------------------------------
+  // TEKLİF VERİSİ GETİR
+  // ----------------------------------------------------------
   async function loadQuote() {
-    const res = await fetch(`https://selcukcan74.github.io/redbook/#/verify?get_quote?id=${quoteId}`);
-    const data = await res.json();
+    try {
+      const res = await fetch(
+        `https://YOUR_SUPABASE_URL/rest/v1/quotes?id=eq.${quoteId}`,
+        {
+          headers: {
+            apikey: "YOUR_SUPABASE_ANON_KEY",
+            Authorization: "Bearer YOUR_SUPABASE_ANON_KEY"
+          }
+        }
+      );
 
-    card.innerHTML = `
-      <div class="title">Teklif #${data.quote_number}</div>
-      <div class="info">Tutar: ₺${data.total}</div>
-      <div class="info">Müşteri: ${data.customer}</div>
-      <div class="info">Durum: ${data.status}</div>
+      const data = await res.json();
+      const q = data[0];
 
-      <div class="buttons">
-        <button class="approve" onclick="approve()">Teklifi Onayla</button>
-        <button class="reject" onclick="reject()">Reddet</button>
-      </div>
-    `;
+      if (!q) {
+        card.innerHTML = `<div class="status-box failed">Teklif bulunamadı.</div>`;
+        return;
+      }
+
+      card.innerHTML = `
+        <div class="title">Teklif #${q.quote_number}</div>
+        <div class="info">Tutar: ₺${q.total_after_discount ?? q.total}</div>
+        <div class="info">Durum: ${q.status}</div>
+
+        <div class="buttons">
+          <button class="approve" onclick="approve()">Teklifi Onayla</button>
+          <button class="reject" onclick="reject()">Reddet</button>
+        </div>
+      `;
+    } catch (err) {
+      card.innerHTML = `<div class="status-box failed">Bağlantı hatası.</div>`;
+    }
   }
 
+  // ----------------------------------------------------------
+  // TEKLİF ONAY
+  // ----------------------------------------------------------
   async function approve() {
-    const res = await fetch(`https://selcukcan74.github.io/redbook/#/verify?get_quote?id=${quoteId}`);
-    card.innerHTML = `<div class="status-box success">✔ Teklif Başarıyla Onaylandı</div>`;
+    await updateStatus("accepted");
+    card.innerHTML = `<div class="status-box success">✔ Teklif Onaylandı</div>`;
   }
 
+  // ----------------------------------------------------------
+  // TEKLİF RED
+  // ----------------------------------------------------------
   async function reject() {
-    const res = await fetch(`https://selcukcan74.github.io/redbook/#/verify?get_quote?id=${quoteId}`);
+    await updateStatus("rejected");
     card.innerHTML = `<div class="status-box failed">✖ Teklif Reddedildi</div>`;
+  }
+
+  // ----------------------------------------------------------
+  // SUPABASE STATUS UPDATE
+  // ----------------------------------------------------------
+  async function updateStatus(newStatus) {
+    await fetch(
+      `https://YOUR_SUPABASE_URL/rest/v1/quotes?id=eq.${quoteId}`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          apikey: "YOUR_SUPABASE_ANON_KEY",
+          Authorization: "Bearer YOUR_SUPABASE_ANON_KEY",
+          Prefer: "return=minimal"
+        },
+        body: JSON.stringify({ status: newStatus })
+      }
+    );
   }
 
   loadQuote();
