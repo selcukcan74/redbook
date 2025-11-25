@@ -136,7 +136,7 @@ class QuoteService {
     String? customerId,
     String? notes,
     DateTime? validUntil,
-    String? status,
+    String? status, // <-- burada accepted kontrolü var
     String? discountType,
     double? discountRate,
     double? discountAmount,
@@ -149,7 +149,20 @@ class QuoteService {
     if (validUntil != null) {
       updateData["valid_until"] = validUntil.toIso8601String();
     }
-    if (status != null) updateData["status"] = status;
+
+    // -----------------------------------------
+    // 🔥 STATUS = ACCEPTED → accepted_at yaz!
+    // -----------------------------------------
+    if (status != null) {
+      updateData["status"] = status;
+
+      if (status == "accepted") {
+        updateData["approved_at"] = DateTime.now().toUtc().toIso8601String();
+      } else {
+        // draft / rejected / sent gibi durumlarda accepted_at null olsun
+        updateData["approved_at"] = null;
+      }
+    }
 
     if (discountType != null) updateData["discount_type"] = discountType;
     if (discountRate != null) updateData["discount_rate"] = discountRate;
@@ -515,5 +528,13 @@ class QuoteService {
     }
 
     return {"quote": quote, "items": items, "customer": customer};
+  }
+
+  Future<int> getApprovedQuotes() async {
+    final res = await supabase
+        .from('quotes')
+        .select('id')
+        .not('approved_at', 'is', null);
+    return res.length;
   }
 }
