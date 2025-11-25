@@ -1,173 +1,47 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Teklif Onaylama</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Teklif Doğrulama Test</title>
 
 <style>
   body {
-    background: #f5f6f7;
     font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
+    background:#f5f6f7;
+    padding:40px;
+    text-align:center;
   }
-
-  .container {
-    max-width: 420px;
-    margin: 60px auto;
-    background: white;
-    padding: 32px;
-    border-radius: 16px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
-    text-align: center;
+  .box {
+    background:white;
+    max-width:420px;
+    margin:auto;
+    padding:30px;
+    border-radius:16px;
+    box-shadow:0 4px 20px rgba(0,0,0,0.08);
   }
-
-  .title {
-    font-size: 22px;
-    font-weight: 700;
-    margin-bottom: 12px;
-    color: #111827;
-  }
-
-  .info {
-    font-size: 15px;
-    color: #555;
-    margin-bottom: 8px;
-  }
-
-  .buttons {
-    margin-top: 24px;
-  }
-
-  button {
-    width: 100%;
-    padding: 14px;
-    margin-top: 10px;
-    border: none;
-    border-radius: 10px;
-    font-size: 16px;
-    cursor: pointer;
-    font-weight: 600;
-  }
-
-  .approve { background: #10b981; color: white; }
-  .reject { background: #ef4444; color: white; }
-
-  .status-box {
-    margin-top: 24px;
-    font-size: 17px;
-    font-weight: bold;
-    padding: 16px;
-    border-radius: 10px;
-  }
-
-  .success { background: #d1fae5; color: #065f46; }
-  .failed { background: #fee2e2; color: #991b1b; }
 </style>
-
 </head>
 <body>
 
-<div class="container" id="card">
-  <div class="title">Teklif Bilgisi Yükleniyor...</div>
+<div class="box">
+  <h2>Verify Test</h2>
+  <p id="log">Veri okunuyor...</p>
 </div>
 
 <script>
-  // ----------------------------------------------------------
-  // HASH ROUTING → GitHub Pages'da ÇALIŞAN TEK YÖNTEM
-  // ----------------------------------------------------------
-  function getQuoteIdFromHash() {
-    const hash = window.location.hash; // #/verify?quoteId=abc
-    if (!hash.includes("?")) return null;
+function getQuoteId() {
+  const hash = window.location.hash;  
+  // Örnek hash: #/verify?quoteId=1234
+  if (!hash.includes("?")) return null;
 
-    const queryString = hash.split("?")[1];
-    const params = new URLSearchParams(queryString);
+  const queryPart = hash.split("?")[1];
+  const params = new URLSearchParams(queryPart);
+  return params.get("quoteId");
+}
 
-    return params.get("quoteId");
-  }
-
-  const quoteId = getQuoteIdFromHash();
-  const card = document.getElementById("card");
-
-  if (!quoteId) {
-    card.innerHTML = `<div class="status-box failed">Teklif ID bulunamadı.</div>`;
-  }
-
-  // ----------------------------------------------------------
-  // TEKLİF VERİSİ GETİR
-  // ----------------------------------------------------------
-  async function loadQuote() {
-    try {
-      const res = await fetch(
-        `https://YOUR_SUPABASE_URL/rest/v1/quotes?id=eq.${quoteId}`,
-        {
-          headers: {
-            apikey: "YOUR_SUPABASE_ANON_KEY",
-            Authorization: "Bearer YOUR_SUPABASE_ANON_KEY"
-          }
-        }
-      );
-
-      const data = await res.json();
-      const q = data[0];
-
-      if (!q) {
-        card.innerHTML = `<div class="status-box failed">Teklif bulunamadı.</div>`;
-        return;
-      }
-
-      card.innerHTML = `
-        <div class="title">Teklif #${q.quote_number}</div>
-        <div class="info">Tutar: ₺${q.total_after_discount ?? q.total}</div>
-        <div class="info">Durum: ${q.status}</div>
-
-        <div class="buttons">
-          <button class="approve" onclick="approve()">Teklifi Onayla</button>
-          <button class="reject" onclick="reject()">Reddet</button>
-        </div>
-      `;
-    } catch (err) {
-      card.innerHTML = `<div class="status-box failed">Bağlantı hatası.</div>`;
-    }
-  }
-
-  // ----------------------------------------------------------
-  // TEKLİF ONAY
-  // ----------------------------------------------------------
-  async function approve() {
-    await updateStatus("accepted");
-    card.innerHTML = `<div class="status-box success">✔ Teklif Onaylandı</div>`;
-  }
-
-  // ----------------------------------------------------------
-  // TEKLİF RED
-  // ----------------------------------------------------------
-  async function reject() {
-    await updateStatus("rejected");
-    card.innerHTML = `<div class="status-box failed">✖ Teklif Reddedildi</div>`;
-  }
-
-  // ----------------------------------------------------------
-  // SUPABASE STATUS UPDATE
-  // ----------------------------------------------------------
-  async function updateStatus(newStatus) {
-    await fetch(
-      `https://YOUR_SUPABASE_URL/rest/v1/quotes?id=eq.${quoteId}`,
-      {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          apikey: "YOUR_SUPABASE_ANON_KEY",
-          Authorization: "Bearer YOUR_SUPABASE_ANON_KEY",
-          Prefer: "return=minimal"
-        },
-        body: JSON.stringify({ status: newStatus })
-      }
-    );
-  }
-
-  loadQuote();
+const qid = getQuoteId();
+document.getElementById("log").innerText = "quoteId = " + qid;
 </script>
 
 </body>
