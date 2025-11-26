@@ -5,14 +5,19 @@
   <meta content="IE=edge" http-equiv="X-UA-Compatible">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+  <!-- ⭐ EN ÖNEMLİ SATIR: doğru base path -->
+  <base href="/redbook/">
+
   <title>Redbook</title>
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#000000">
 
   <script>
-    const serviceWorkerVersion = "2655260855" /* Flutter's service worker is deprecated and will be removed in a future Flutter release. */;
+    const serviceWorkerVersion = "2745867771" /* Flutter's service worker is deprecated and will be removed in a future Flutter release. */;
   </script>
-  <script src="flutter.js" defer></script>
+
+  <!-- flutter_bootstrap.js dosyası DOĞRU PATH’TEN yüklenecek -->
+  <script src="flutter_bootstrap.js" defer></script>
 
   <style>
     html, body {
@@ -25,6 +30,7 @@
     }
   </style>
 </head>
+
 <body>
   <script>
     window.addEventListener('load', function () {
@@ -38,4 +44,5 @@
     });
   </script>
 </body>
+
 </html>
