@@ -8,23 +8,26 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      # 🚀 Flutter'ın doğru versiyonunu kuruyoruz
-      - uses: subosito/flutter-action@v2
+      - name: Install Flutter (3.39.0-1.0.pre-189)
+        uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.24.0'   # <-- SENİN LOKAL SÜRÜMÜN
-          channel: stable
+          flutter-version: '3.39.0-1.0.pre-189'
+          channel: 'beta'
+
+      - name: Enable Flutter Web
+        run: flutter config --enable-web
 
       - name: Install dependencies
         run: flutter pub get
 
-      - name: Build Flutter web
+      - name: Build Flutter Web
         run: flutter build web --release
 
-      # 🚀 build/web klasörünü gh-pages'e deploy et
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./build/web
+          publish_dir: build/web
