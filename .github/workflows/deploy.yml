@@ -21,8 +21,11 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
+      - name: Outdated packages check
+        run: flutter pub outdated
+
       - name: Build Flutter Web
-        run: flutter build web --release
+        run: flutter build web --base-href "/redbook/" --release
 
       # 🔥 En kritik kısım burası
       - name: Deploy to GitHub Pages
