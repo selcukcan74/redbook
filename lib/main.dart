@@ -1,9 +1,12 @@
+// ignore_for_file: depend_on_referenced_packages
+
 import 'package:flutter/material.dart';
 //import 'package:redbook/pages/auth/login_page.dart';
 import 'package:redbook/pages/home_page.dart';
 import 'package:redbook/pages/verify_quote_page.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_web_plugins/url_strategy.dart';
 //import 'pages/verify_quote_page.dart';
 
 Future<void> main() async {
@@ -16,6 +19,7 @@ Future<void> main() async {
     anonKey: dotenv.env['SUPABASE_ANON_KEY']!,
   );
 
+  setUrlStrategy(const HashUrlStrategy());
   runApp(const MyApp());
 }
 
