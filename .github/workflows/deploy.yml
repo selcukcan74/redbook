@@ -1,4 +1,4 @@
-name: Deploy Flutter Web to another repo
+name: Deploy Flutter Web to redbook-verify
 
 on:
   push:
@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout source repo
+      - name: Checkout source repo (redbook)
         uses: actions/checkout@v4
 
       - name: Setup Flutter
@@ -30,6 +30,7 @@ jobs:
         uses: peaceiris/actions-gh-pages@v3
         with:
           external_repository: selcukcan74/redbook-verify
-          github_token: ${{ secrets.VERIFY_REPO_TOKEN }}
           publish_branch: gh-pages
           publish_dir: build/web
+          github_token: ${{ secrets.VERIFY_REPO_TOKEN }}
+          force_orphan: true
