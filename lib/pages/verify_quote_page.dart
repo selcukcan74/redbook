@@ -15,63 +15,44 @@ class _VerifyQuotePageState extends State<VerifyQuotePage> {
   Map<String, dynamic>? quote;
   String? quoteId;
 
-  // DEBUG alanları
-  String debugBase = '';
-  String debugFragment = '';
-  Map<String, String> debugQuery = {};
-  String debugSource = '';
-
   @override
   void initState() {
     super.initState();
     initVerify();
   }
 
-  // ---------------------------------------------------
-  // URL'den quoteId çekme (hem fragment, hem normal query)
-  // ---------------------------------------------------
-  String? _extractQuoteId(Uri uri) {
-    // 1) Hash içinden dene:  "#/verify?quoteId=123"
-    final fragment = uri.fragment; // örn: "/verify?quoteId=123"
-    if (fragment.contains("?")) {
-      final parts = fragment.split("?");
-      if (parts.length >= 2) {
-        final queryString = parts[1]; // "quoteId=123"
-        try {
-          final params = Uri.splitQueryString(queryString);
-          if (params["quoteId"] != null) {
-            debugSource = "fragment (hash)";
-            return params["quoteId"];
-          }
-        } catch (_) {
-          // ignore
-        }
-      }
-    }
+  // ------------------------------------------------
+  // URL’den quoteId okuma (hem normal query hem hash)
+  // ------------------------------------------------
+  String? _extractQuoteIdFromUrl() {
+    // 1) Normal query:  /?quoteId=123
+    final q1 = Uri.base.queryParameters['quoteId'];
+    if (q1 != null && q1.isNotEmpty) return q1;
 
-    // 2) Normal query (localhost'ta pathUrlStrategy vb. için)
-    if (uri.queryParameters["quoteId"] != null) {
-      debugSource = "normal queryParameters";
-      return uri.queryParameters["quoteId"];
-    }
+    // 2) Hash router:  #/verify?quoteId=123
+    final fragment = Uri.base.fragment; // "/verify?quoteId=TEST123" gibi
+    if (fragment.isEmpty || !fragment.contains('?')) return null;
 
-    debugSource = "bulunamadı";
-    return null;
+    // "?quoteId=TEST123" kısmını al
+    final fragQuery = fragment.split('?').last;
+
+    try {
+      final map = Uri.splitQueryString(fragQuery);
+      return map['quoteId'];
+    } catch (_) {
+      return null;
+    }
   }
 
   Future<void> initVerify() async {
-    final uri = Uri.base;
+    final id = _extractQuoteIdFromUrl();
+    quoteId = id;
 
-    // DEBUG verileri kaydet
-    debugBase = uri.toString();
-    debugFragment = uri.fragment;
-    debugQuery = uri.queryParameters;
-
-    quoteId = _extractQuoteId(uri);
-
-    if (quoteId == null) {
-      // quoteId hiç gelmiyorsa Supabase'e gitmeye gerek yok
-      setState(() => loading = false);
+    if (quoteId == null || quoteId!.isEmpty) {
+      setState(() {
+        loading = false;
+        quote = null;
+      });
       return;
     }
 
@@ -82,13 +63,16 @@ class _VerifyQuotePageState extends State<VerifyQuotePage> {
           .eq("id", quoteId!)
           .maybeSingle();
 
-      quote = res;
+      setState(() {
+        quote = res;
+        loading = false;
+      });
     } catch (e) {
-      // hata olursa yine debug için saklayabilirsin
-      debugSource += " | supabase error: $e";
+      setState(() {
+        loading = false;
+        quote = null;
+      });
     }
-
-    setState(() => loading = false);
   }
 
   Future<void> updateStatus(String newStatus) async {
@@ -110,44 +94,17 @@ class _VerifyQuotePageState extends State<VerifyQuotePage> {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
-    // Eğer quoteId yoksa veya kayıt bulunmadıysa
-    if (quoteId == null || quote == null) {
-      return Scaffold(
-        appBar: AppBar(title: const Text("Teklif Onay – DEBUG")),
-        body: SingleChildScrollView(
-          padding: const EdgeInsets.all(20),
-          child: DefaultTextStyle(
-            style: const TextStyle(fontSize: 14, color: Colors.black87),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  "Teklif bulunamadı veya quoteId alınamadı.",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 16),
-                const Text(
-                  "Aşağıda debug bilgileri var. Bunlar URL’nin Flutter tarafından nasıl görüldüğünü gösteriyor:",
-                ),
-                const SizedBox(height: 16),
-                Text("Uri.base           : $debugBase"),
-                const SizedBox(height: 8),
-                Text("Uri.fragment       : $debugFragment"),
-                const SizedBox(height: 8),
-                Text("Uri.queryParameters: $debugQuery"),
-                const SizedBox(height: 8),
-                Text("Parse edilen quoteId: $quoteId"),
-                const SizedBox(height: 8),
-                Text("quoteId kaynağı     : $debugSource"),
-              ],
-            ),
-          ),
-        ),
+    if (quoteId == null) {
+      return const Scaffold(
+        body: Center(child: Text("Geçersiz bağlantı (quoteId bulunamadı).")),
       );
     }
 
-    // Buraya geldiysek, quoteId ve kayıt var
-    final status = quote!["status"] ?? "unknown";
+    if (quote == null) {
+      return const Scaffold(body: Center(child: Text("Teklif bulunamadı.")));
+    }
+
+    final status = (quote!["status"] ?? "unknown") as String;
 
     return Scaffold(
       appBar: AppBar(title: const Text("Teklif Onay")),
