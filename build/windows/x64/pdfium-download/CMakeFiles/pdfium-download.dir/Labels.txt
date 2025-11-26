@@ -1,0 +1,14 @@
+# Target labels
+ pdfium-download
+# Source files and their labels
+C:/Users/selcu/Documents/FlutterProjects/redbook/build/windows/x64/pdfium-download/CMakeFiles/pdfium-download
+C:/Users/selcu/Documents/FlutterProjects/redbook/build/windows/x64/pdfium-download/CMakeFiles/91cece15ada66261895bdb7016640f0b/pdfium-download.rule
+C:/Users/selcu/Documents/FlutterProjects/redbook/build/windows/x64/pdfium-download/CMakeFiles/e0fde0b5e148c76cd060e6ce37aa0129/pdfium-download-complete.rule
+C:/Users/selcu/Documents/FlutterProjects/redbook/build/windows/x64/pdfium-download/CMakeFiles/11375b7da63da32681614dbc79b4890c/pdfium-download-build.rule
+C:/Users/selcu/Documents/FlutterProjects/redbook/build/windows/x64/pdfium-download/CMakeFiles/11375b7da63da32681614dbc79b4890c/pdfium-download-configure.rule
+C:/Users/selcu/Documents/FlutterProjects/redbook/build/windows/x64/pdfium-download/CMakeFiles/11375b7da63da32681614dbc79b4890c/pdfium-download-download.rule
+C:/Users/selcu/Documents/FlutterProjects/redbook/build/windows/x64/pdfium-download/CMakeFiles/11375b7da63da32681614dbc79b4890c/pdfium-download-install.rule
+C:/Users/selcu/Documents/FlutterProjects/redbook/build/windows/x64/pdfium-download/CMakeFiles/11375b7da63da32681614dbc79b4890c/pdfium-download-mkdir.rule
+C:/Users/selcu/Documents/FlutterProjects/redbook/build/windows/x64/pdfium-download/CMakeFiles/11375b7da63da32681614dbc79b4890c/pdfium-download-patch.rule
+C:/Users/selcu/Documents/FlutterProjects/redbook/build/windows/x64/pdfium-download/CMakeFiles/11375b7da63da32681614dbc79b4890c/pdfium-download-test.rule
+C:/Users/selcu/Documents/FlutterProjects/redbook/build/windows/x64/pdfium-download/CMakeFiles/11375b7da63da32681614dbc79b4890c/pdfium-download-update.rule
