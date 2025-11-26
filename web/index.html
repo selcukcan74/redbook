@@ -5,7 +5,6 @@
   <meta content="IE=edge" http-equiv="X-UA-Compatible">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- GitHub Pages için base -->
   <base href="/redbook/">
 
   <title>Redbook</title>
@@ -24,18 +23,15 @@
       margin: 0;
       padding: 0;
       overflow: hidden;
-      background: #ffffff;
+      background: white;
     }
   </style>
 </head>
-
 <body>
   <script>
     window.addEventListener('load', function () {
       _flutter.loader.loadEntrypoint({
-        serviceWorker: {
-          serviceWorkerVersion: serviceWorkerVersion,
-        },
+        serviceWorker: { serviceWorkerVersion: serviceWorkerVersion }
       }).then(function (engineInitializer) {
         return engineInitializer.initializeEngine();
       }).then(function (appRunner) {
