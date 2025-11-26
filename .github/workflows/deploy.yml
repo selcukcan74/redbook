@@ -1,5 +1,4 @@
 name: Deploy Flutter Web
-
 on:
   push:
     branches: [ main ]
@@ -10,20 +9,24 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - name: Setup Flutter
+      - name: Install Flutter
         uses: subosito/flutter-action@v2
         with:
-          channel: 'stable'   # ← Versiyonu manuel yazma, stable her zaman çalışır
+          channel: "stable"     # Versiyon hatasına son
 
-      - run: flutter config --enable-web
+      - name: Enable Flutter Web
+        run: flutter config --enable-web
 
-      - run: flutter pub get
+      - name: Get dependencies
+        run: flutter pub get
 
-      - run: flutter build web --release --base-href "/redbook/"
+      - name: Build Flutter Web
+        run: flutter build web --release --base-href "/redbook/"  # mutlaka senin repo adın
 
-      - name: Deploy
+      - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
