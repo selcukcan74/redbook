@@ -29,5 +29,5 @@ jobs:
           external_repository: selcukcan74/redbook-verify
           publish_branch: gh-pages
           publish_dir: build/web
-          github_token: ${{ secrets.VERIFY_REPO_TOKEN }}
+          personal_token: ${{ secrets.VERIFY_REPO_TOKEN }}
           force_orphan: true
