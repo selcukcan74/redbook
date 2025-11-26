@@ -695,7 +695,7 @@
       "name": "redbook",
       "rootUri": "../",
       "packageUri": "lib/",
-      "languageVersion": "3.11"
+      "languageVersion": "3.10"
     }
   ],
   "generator": "pub",
