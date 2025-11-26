@@ -21,9 +21,27 @@ class _VerifyQuotePageState extends State<VerifyQuotePage> {
     initVerify();
   }
 
+  String? extractQuoteId() {
+    final fragment = Uri.base.fragment;
+    // fragment: "/verify?quoteId=123"
+
+    if (!fragment.contains("?")) return null;
+
+    final parts = fragment.split("?");
+    if (parts.length < 2) return null;
+
+    final queryString = parts[1]; // "quoteId=123"
+
+    try {
+      final params = Uri.splitQueryString(queryString);
+      return params["quoteId"];
+    } catch (_) {
+      return null;
+    }
+  }
+
   Future<void> initVerify() async {
-    final params = Uri.base.queryParameters;
-    quoteId = params["quoteId"];
+    quoteId = extractQuoteId();
 
     if (quoteId == null) {
       setState(() => loading = false);
