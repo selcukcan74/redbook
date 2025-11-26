@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Teklif Doğrulama Test</title>
+
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background:#f5f6f7;
+    padding:40px;
+    text-align:center;
+  }
+  .box {
+    background:white;
+    max-width:420px;
+    margin:auto;
+    padding:30px;
+    border-radius:16px;
+    box-shadow:0 4px 20px rgba(0,0,0,0.08);
+  }
+</style>
+</head>
+<body>
+
+<div class="box">
+  <h2>Verify Test</h2>
+  <p id="log">Veri okunuyor...</p>
+</div>
+
+<script>
+  const url = new URL(window.location.href);
+  const qid = url.searchParams.get("quoteId");
+
+  document.getElementById("log").innerText = "quoteId = " + qid;
+</script>
+
+</body>
+</html>
