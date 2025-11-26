@@ -2,32 +2,28 @@ name: Deploy Flutter Web
 
 on:
   push:
-    branches: [ main ]   # Ana branch'e her push yaptığında deploy olur
-  workflow_dispatch:      # Manuel çalıştırma desteği
+    branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-      - name: Set up Flutter
+      - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.22.0'
+          channel: 'stable'   # ← Versiyonu manuel yazma, stable her zaman çalışır
 
-      - name: Enable web
-        run: flutter config --enable-web
+      - run: flutter config --enable-web
 
-      - name: Install dependencies
-        run: flutter pub get
+      - run: flutter pub get
 
-      - name: Build web
-        run: flutter build web --release --base-href "/redbook/"
+      - run: flutter build web --release --base-href "/redbook/"
 
-      - name: Deploy to GitHub Pages
+      - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
