@@ -1,49 +1,47 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html>
 <head>
-<base href="/redbook/">
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Teklif Doğrulama Test</title>
+  <meta charset="UTF-8">
+  <meta content="IE=edge" http-equiv="X-UA-Compatible">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<style>
-  body {
-    font-family: Arial, sans-serif;
-    background:#f5f6f7;
-    padding:40px;
-    text-align:center;
-  }
-  .box {
-    background:white;
-    max-width:420px;
-    margin:auto;
-    padding:30px;
-    border-radius:16px;
-    box-shadow:0 4px 20px rgba(0,0,0,0.08);
-  }
-</style>
+  <!-- GitHub Pages için base -->
+  <base href="/redbook/">
+
+  <title>Redbook</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#000000">
+
+  <script>
+    const serviceWorkerVersion = null;
+  </script>
+  <script src="flutter.js" defer></script>
+
+  <style>
+    html, body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background: #ffffff;
+    }
+  </style>
 </head>
+
 <body>
-
-<div class="box">
-  <h2>Verify Test</h2>
-  <p id="log">Veri okunuyor...</p>
-</div>
-
-<script>
-function getQuoteId() {
-  const hash = window.location.hash;  
-  // Örnek hash: #/verify?quoteId=1234
-  if (!hash.includes("?")) return null;
-
-  const queryPart = hash.split("?")[1];
-  const params = new URLSearchParams(queryPart);
-  return params.get("quoteId");
-}
-
-const qid = getQuoteId();
-document.getElementById("log").innerText = "quoteId = " + qid;
-</script>
-
+  <script>
+    window.addEventListener('load', function () {
+      _flutter.loader.loadEntrypoint({
+        serviceWorker: {
+          serviceWorkerVersion: serviceWorkerVersion,
+        },
+      }).then(function (engineInitializer) {
+        return engineInitializer.initializeEngine();
+      }).then(function (appRunner) {
+        return appRunner.runApp();
+      });
+    });
+  </script>
 </body>
 </html>

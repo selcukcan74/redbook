@@ -350,12 +350,6 @@
       "languageVersion": "3.2"
     },
     {
-      "name": "objective_c",
-      "rootUri": "file:///C:/Users/selcu/AppData/Local/Pub/Cache/hosted/pub.dev/objective_c-9.1.0",
-      "packageUri": "lib/",
-      "languageVersion": "3.8"
-    },
-    {
       "name": "path",
       "rootUri": "file:///C:/Users/selcu/AppData/Local/Pub/Cache/hosted/pub.dev/path-1.9.1",
       "packageUri": "lib/",
@@ -381,7 +375,7 @@
     },
     {
       "name": "path_provider_foundation",
-      "rootUri": "file:///C:/Users/selcu/AppData/Local/Pub/Cache/hosted/pub.dev/path_provider_foundation-2.5.0",
+      "rootUri": "file:///C:/Users/selcu/AppData/Local/Pub/Cache/hosted/pub.dev/path_provider_foundation-2.5.1",
       "packageUri": "lib/",
       "languageVersion": "3.9"
     },
@@ -450,12 +444,6 @@
       "rootUri": "file:///C:/Users/selcu/AppData/Local/Pub/Cache/hosted/pub.dev/printing-5.14.2",
       "packageUri": "lib/",
       "languageVersion": "3.3"
-    },
-    {
-      "name": "pub_semver",
-      "rootUri": "file:///C:/Users/selcu/AppData/Local/Pub/Cache/hosted/pub.dev/pub_semver-2.2.0",
-      "packageUri": "lib/",
-      "languageVersion": "3.4"
     },
     {
       "name": "qr",

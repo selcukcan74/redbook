@@ -1,4 +1,4 @@
-// @dart=3.11
+// @dart=3.10
 // Flutter web bootstrap script for package:redbook/main.dart.
 //
 // Generated file. Do not edit.
