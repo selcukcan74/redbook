@@ -52,7 +52,7 @@
     },
     {
       "name": "file_picker",
-      "version": "10.3.7",
+      "version": "10.3.8",
       "dependencies": [
         "cross_file",
         "dbus",
@@ -153,7 +153,7 @@
     },
     {
       "name": "supabase_flutter",
-      "version": "2.10.3",
+      "version": "2.12.0",
       "dependencies": [
         "app_links",
         "async",
@@ -371,7 +371,7 @@
     },
     {
       "name": "image_picker_ios",
-      "version": "0.8.13+2",
+      "version": "0.8.13+3",
       "dependencies": [
         "flutter",
         "image_picker_platform_interface"
@@ -477,7 +477,7 @@
     },
     {
       "name": "shared_preferences",
-      "version": "2.5.3",
+      "version": "2.5.4",
       "dependencies": [
         "flutter",
         "shared_preferences_android",
@@ -516,7 +516,7 @@
     },
     {
       "name": "supabase",
-      "version": "2.10.0",
+      "version": "2.10.2",
       "dependencies": [
         "functions_client",
         "gotrue",
@@ -746,7 +746,7 @@
     },
     {
       "name": "shared_preferences_android",
-      "version": "2.4.17",
+      "version": "2.4.18",
       "dependencies": [
         "flutter",
         "shared_preferences_platform_interface"
@@ -882,7 +882,7 @@
     },
     {
       "name": "realtime_client",
-      "version": "2.6.0",
+      "version": "2.7.0",
       "dependencies": [
         "collection",
         "http",
@@ -893,7 +893,7 @@
     },
     {
       "name": "postgrest",
-      "version": "2.5.0",
+      "version": "2.6.0",
       "dependencies": [
         "http",
         "logging",
@@ -903,10 +903,11 @@
     },
     {
       "name": "gotrue",
-      "version": "2.16.0",
+      "version": "2.18.0",
       "dependencies": [
         "collection",
         "crypto",
+        "dart_jsonwebtoken",
         "http",
         "jwt_decode",
         "logging",
@@ -995,6 +996,16 @@
       ]
     },
     {
+      "name": "dart_jsonwebtoken",
+      "version": "3.3.1",
+      "dependencies": [
+        "clock",
+        "convert",
+        "ed25519_edwards",
+        "pointycastle"
+      ]
+    },
+    {
       "name": "jwt_decode",
       "version": "0.3.1",
       "dependencies": []
@@ -1014,6 +1025,43 @@
       "dependencies": [
         "web"
       ]
+    },
+    {
+      "name": "ed25519_edwards",
+      "version": "0.3.1",
+      "dependencies": [
+        "adaptive_number",
+        "collection",
+        "convert",
+        "crypto"
+      ]
+    },
+    {
+      "name": "convert",
+      "version": "3.1.2",
+      "dependencies": [
+        "typed_data"
+      ]
+    },
+    {
+      "name": "pointycastle",
+      "version": "4.0.0",
+      "dependencies": [
+        "collection",
+        "convert"
+      ]
+    },
+    {
+      "name": "adaptive_number",
+      "version": "1.0.0",
+      "dependencies": [
+        "fixnum"
+      ]
+    },
+    {
+      "name": "fixnum",
+      "version": "1.1.1",
+      "dependencies": []
     }
   ],
   "configVersion": 1

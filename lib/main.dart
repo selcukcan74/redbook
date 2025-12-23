@@ -1,6 +1,7 @@
 // ignore_for_file: depend_on_referenced_packages
 
 import 'package:flutter/material.dart';
+import 'package:redbook/pages/auth/login_page.dart';
 //import 'package:redbook/pages/auth/login_page.dart';
 import 'package:redbook/pages/home_page.dart';
 import 'package:redbook/pages/verify_quote_page.dart';
@@ -31,9 +32,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       routes: {
-        //'/': (context) => const LoginPage(),
-        //'/home': (context) => const HomePage(),
-        '/': (context) => const HomePage(),
+        '/': (context) => const LoginPage(),
+        '/home': (context) => const HomePage(),
+        //'/': (context) => const HomePage(),
         '/verify': (context) => const VerifyQuotePage(),
       },
       theme: ThemeData(

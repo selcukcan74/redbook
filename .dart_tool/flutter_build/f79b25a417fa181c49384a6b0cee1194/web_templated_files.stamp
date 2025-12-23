@@ -1,0 +1,1 @@
+{"inputs":["/Users/can/redbook/web/*/index.html","/Users/can/redbook/web/flutter_bootstrap.js","/Users/can/Documents/Flutter/flutter/bin/cache/engine.stamp"],"outputs":["/Users/can/redbook/build/web/*/index.html","/Users/can/redbook/build/web/flutter_bootstrap.js"],"buildKey":"[{\"compileTarget\":\"dart2js\",\"renderer\":\"canvaskit\",\"mainJsPath\":\"main.dart.js\"},{}]"}

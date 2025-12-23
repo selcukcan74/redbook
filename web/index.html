@@ -1,48 +1,55 @@
 <!DOCTYPE html>
-<html>
+<html lang="tr">
 <head>
-  <meta charset="UTF-8">
-  <meta content="IE=edge" http-equiv="X-UA-Compatible">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <!-- ⭐ EN ÖNEMLİ SATIR: doğru base path -->
-  <base href="$FLUTTER_BASE_HREF">
-
-  <title>Redbook</title>
-  <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#000000">
-
-  <script>
-    const serviceWorkerVersion = null;
-  </script>
-
-  <!-- flutter_bootstrap.js dosyası DOĞRU PATH’TEN yüklenecek -->
-  <script src="flutter_bootstrap.js" defer></script>
+  <meta charset="UTF-8" />
+  <title>Teklif Doğrulama</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <style>
-    html, body {
-      width: 100%;
-      height: 100%;
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #f5f6fa;
       margin: 0;
       padding: 0;
-      overflow: hidden;
-      background: white;
+    }
+    .card {
+      max-width: 520px;
+      margin: 80px auto;
+      background: #fff;
+      padding: 28px;
+      border-radius: 14px;
+      box-shadow: 0 12px 30px rgba(0,0,0,.08);
+      text-align: center;
+    }
+    h1 { margin-bottom: 8px; }
+    .status {
+      font-size: 18px;
+      font-weight: 600;
+      margin-top: 16px;
+    }
+    .ok { color: #16a34a; }
+    .reject { color: #dc2626; }
+    .pending { color: #ca8a04; }
+    .info {
+      margin-top: 10px;
+      color: #555;
     }
   </style>
 </head>
 
 <body>
-  <script>
-    window.addEventListener('load', function () {
-      _flutter.loader.loadEntrypoint({
-        serviceWorker: { serviceWorkerVersion: serviceWorkerVersion }
-      }).then(function (engineInitializer) {
-        return engineInitializer.initializeEngine();
-      }).then(function (appRunner) {
-        return appRunner.runApp();
-      });
-    });
-  </script>
-</body>
 
+<div class="card">
+  <h1>Teklif Doğrulama</h1>
+  <p id="loading">Yükleniyor…</p>
+
+  <div id="content" style="display:none">
+    <p><strong>Teklif No:</strong> <span id="quoteNo"></span></p>
+    <p id="statusText" class="status"></p>
+    <p id="dateText" class="info"></p>
+  </div>
+</div>
+
+<script src="verify.js"></script>
+</body>
 </html>
